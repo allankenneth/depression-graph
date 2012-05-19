@@ -1,0 +1,119 @@
+<!doctype html>
+<!-- Conditional comment for mobile ie7 http://blogs.msdn.com/b/iemobile/ -->
+<!-- Appcache Facts http://appcachefacts.info/ -->
+<!--[if IEMobile 7 ]>    <html class="no-js iem7"> <![endif]-->
+<!--[if (gt IEMobile 7)|!(IEMobile)]><!--> <html class="no-js"> <!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Depression Graph</title>
+  <meta name="description" content="Depression Graph: Keep track of your major depression inventories. Track, share, get better.">
+  <meta name="author" content="Allan Haggett">
+  
+  <!-- Mobile viewport optimization http://goo.gl/b9SaQ -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Home screen icon  Mathias Bynens http://goo.gl/6nVq0 -->
+  <!-- For iPhone 4 with high-resolution Retina display: -->
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/h/apple-touch-icon.png">
+  <!-- For first-generation iPad: -->
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/m/apple-touch-icon.png">
+  <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+  <link rel="apple-touch-icon-precomposed" href="img/l/apple-touch-icon-precomposed.png">
+  <!-- For nokia devices: -->
+  <link rel="shortcut icon" href="img/l/apple-touch-icon.png">
+  
+  <!--iOS web app, deletable if not needed -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-startup-image" href="img/l/splash.png">
+  
+  <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
+  <meta http-equiv="cleartype" content="on">
+	
+	<!-- more tags for your 'head' to consider https://gist.github.com/849231 -->
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css?v=1">
+ 
+  <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
+  <script src="js/libs/modernizr-custom.js"></script>
+
+</head>
+
+<body>
+	<div id="top" class="navigation-bar black">
+		<h1>Depression Graph</h1>
+	</div>
+  <div id="container">
+
+    <div id="main" role="main">
+		<p class="tagline">Track Your Depression Inventories.</p>
+		<p id="login"><a href="{{ url }}">Log In</a></p>
+		<p><a href="{{ url }}">Use Your Google Account</a> and track your <a href="/info">Major Depression Inventories</a>, graphing your results over time. Get reminded every two weeks to take it again.</p>
+		<ol id="trackshare">
+			<li><strong>Track.</strong> Each of your inventories is archived, its score graphed on a chart. Watch your progression over time and help determine the course of your treatment.</li>
+			<li><strong>Share.</strong> Email the results of individual tests to whomever you choose, including your doctor.</li>
+			<li><strong>Get Better.</strong> Having a stable reminder of your progress can help bolster confidence in your treatment, and maybe even help speed it along.</li>
+		</ol>
+<!-- 		<p><a id="loginlink" href="{{ url }}">Login using your Google Account</a></p> -->
+    </div>
+    
+    <footer>
+
+    </footer>
+  </div> <!--! end of #container -->
+
+
+</script>
+  <!-- JavaScript at the bottom for fast page loading -->
+
+  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if necessary -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
+  <script>window.jQuery || document.write("<script src='js/libs/jquery-1.5.1.min.js'>\x3C/script>")</script>
+
+  <script>
+  	$(document).ready(function(){
+  		$('a').click(function() {	 
+  			window.location.href = $(this).attr('href'); 
+			return false; 
+		});
+  	});
+  </script> 
+  <!-- scripts concatenated and minified via ant build script -->
+  <script src="js/mylibs/helper.js"></script>
+  <!-- end concatenated and minified scripts-->
+  
+  <script>
+    // iPhone Scale Bug Fix, read this when using http://www.blog.highub.com/mobile-2/a-fix-for-iphone-viewport-scale-bug/
+    MBP.scaleFix();
+    
+    // Media Queries Polyfill https://github.com/shichuan/mobile-html5-boilerplate/wiki/Media-Queries-Polyfill
+    yepnope({
+      test : Modernizr.mq('(min-width)'),
+      nope : ['js/libs/respond.min.js']
+    });
+  </script>
+  
+  <!-- Debugger - remove for production -->
+  <!-- <script src="https://getfirebug.com/firebug-lite.js"></script> -->
+  
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-23662637-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</body>
+</html>

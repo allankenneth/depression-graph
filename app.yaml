@@ -1,0 +1,25 @@
+application: depressiongraph
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /css
+  static_dir: views/css
+
+- url: /js
+  static_dir: views/js
+
+- url: /img
+  static_dir: views/img
+  
+- url: .*
+  script: main.py
+
+- url: /reminder/.*
+  script: main.py
+  login: admin
+  
+- url: /inventory/.*
+  script: main.py
+  login: required

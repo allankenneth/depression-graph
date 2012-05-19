@@ -1,0 +1,297 @@
+<!doctype html>
+<!-- Conditional comment for mobile ie7 http://blogs.msdn.com/b/iemobile/ -->
+<!-- Appcache Facts http://appcachefacts.info/ -->
+<!--[if IEMobile 7 ]>    <html class="no-js iem7"> <![endif]-->
+<!--[if (gt IEMobile 7)|!(IEMobile)]><!--> <html class="no-js"> <!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Depression Graph</title>
+  <meta name="description" content="Depression Graph: Keep track of your major depression inventories. Track, share, get better.">
+  <meta name="author" content="Allan Haggett">
+  
+  <!-- Mobile viewport optimization http://goo.gl/b9SaQ -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Home screen icon  Mathias Bynens http://goo.gl/6nVq0 -->
+  <!-- For iPhone 4 with high-resolution Retina display: -->
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/h/apple-touch-icon.png">
+  <!-- For first-generation iPad: -->
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/m/apple-touch-icon.png">
+  <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+  <link rel="apple-touch-icon-precomposed" href="img/l/apple-touch-icon-precomposed.png">
+  <!-- For nokia devices: -->
+  <link rel="shortcut icon" href="img/l/apple-touch-icon.png">
+  
+  <!--iOS web app, deletable if not needed -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-startup-image" href="img/l/splash.png">
+  
+  <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
+  <meta http-equiv="cleartype" content="on">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css?v=1">
+ 
+  <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
+  <script src="js/libs/modernizr-custom.js"></script>
+
+</head>
+
+<body>
+<div id="top" class="navigation-bar black">
+<div class="button bordered back"><a href="/">Home</a></div>
+<span class="track">
+	<a href="#low-spirits" title="1. Have you felt low in spirits or sad?">&bull;</a>
+	<a href="#lost-interest" title="2. Have you lost interest in your daily activities?">&bull;</a>
+	<a href="#lacking-energy" title="3. Have you felt lacking in energy and strength?">&bull;</a>
+	<a href="#less-self-confident" title="4. Have you felt less self-confident?">&bull;</a>
+	<a href="#bad-conscience" title="5. Have you had a bad conscience or feelings of guilt?">&bull;</a>
+	<a href="#not-worth-living" title="6. Have you felt that life wasn’t worth living?">&bull;</a>
+	<a href="#difficulty-concentrating" title="7. Have you had difficulty in concentrating?">&bull;</a>
+	<a href="#restless" title="8. a) Have you felt very restless?">&bull;</a>
+	<a href="#question" title="8. b)Have you felt subdued or slowed down?">&bull;</a>
+	<a href="#trouble-sleeping" title="9. Have you had trouble sleeping at night?">&bull;</a>
+	<a href="#reduced-appetite" title="10. a)Have you suffered from reduced appetite?">&bull;</a>
+	<a href="#increased-appetite" title="10. b)Have you suffered from increased appetite?">&bull;</a>
+</span>
+	
+</div>
+  <div id="container">
+    <header>
+
+
+    </header>
+    <div id="main" role="main">
+
+		<form id="inventory-form" action="/take" method="post">
+
+			<div id="low-spirits">
+			<p>In the past two weeks:</p>
+			1. Have you felt low in spirits or sad?
+			
+				<label><input type="radio" id="low-spirits1" name="low-spirits" value="5" value="5"> All the time </label>
+				<label><input type="radio" id="low-spirits2" name="low-spirits" value="4"> Most of the time</label>
+				<label><input type="radio" id="low-spirits3" name="low-spirits" value="3"> Slightly more than half the time</label>
+				<label><input type="radio" id="low-spirits4" name="low-spirits" value="2"> Slightly less than half the time</label>
+				<label><input type="radio" id="low-spirits5" name="low-spirits" value="1"> Some of the time</label>
+				<label><input type="radio" id="low-spirits6" name="low-spirits" value="0"> At no time</label>
+			
+			</div>
+			
+			<div id="lost-interest">2. Have you lost interest in your daily activities?
+			
+				<label><input type="radio" id="lost-interest1" name="lost-interest" value="5"> All the time </label>
+				<label><input type="radio" id="lost-interest2" name="lost-interest" value="4"> Most of the time</label>
+				<label><input type="radio" id="lost-interest3" name="lost-interest" value="3"> Slightly more than half the time</label>
+				<label><input type="radio" id="lost-interest4" name="lost-interest" value="2"> Slightly less than half the time</label>
+				<label><input type="radio" id="lost-interest5" name="lost-interest" value="1"> Some of the time</label>
+				<label><input type="radio" id="lost-interest6" name="lost-interest" value="0"> At no time</label>
+			
+			</div>
+			
+			<div id="lacking-energy">3. Have you felt lacking in energy and strength?
+			
+				<label><input type="radio" id="lacking-energy1" name="lacking-energy" value="5"> All the time </label>
+				<label><input type="radio" id="lacking-energy2" name="lacking-energy" value="4"> Most of the time</label>
+				<label><input type="radio" id="lacking-energy3" name="lacking-energy" value="3"> Slightly more than half the time</label>
+				<label><input type="radio" id="lacking-energy4" name="lacking-energy" value="2"> Slightly less than half the time</label>
+				<label><input type="radio" id="lacking-energy5" name="lacking-energy" value="1"> Some of the time</label>
+				<label><input type="radio" id="lacking-energy6" name="lacking-energy" value="0"> At no time</label>
+			
+			</div>						
+			
+			<div id="less-self-confident">4. Have you felt less self-confident?
+			
+				<label><input type="radio" id="less-self-confident1" name="less-self-confident" value="5"> All the time </label>
+				<label><input type="radio" id="less-self-confident2" name="less-self-confident" value="4"> Most of the time</label>
+				<label><input type="radio" id="less-self-confident3" name="less-self-confident" value="3"> Slightly more than half the time</label>
+				<label><input type="radio" id="less-self-confident4" name="less-self-confident" value="2"> Slightly less than half the time</label>
+				<label><input type="radio" id="less-self-confident5" name="less-self-confident" value="1"> Some of the time</label>
+				<label><input type="radio" id="less-self-confident6" name="less-self-confident" value="0"> At no time</label>
+			
+			</div>						
+			<div id="bad-conscience">5. Have you had a bad conscience or feelings of guilt?
+			
+				<label><input type="radio" id="bad-conscience1" name="bad-conscience" value="5"> All the time </label>
+				<label><input type="radio" id="bad-conscience2" name="bad-conscience" value="4"> Most of the time</label>
+				<label><input type="radio" id="bad-conscience3" name="bad-conscience" value="3"> Slightly more than half the time</label>
+				<label><input type="radio" id="bad-conscience4" name="bad-conscience" value="2"> Slightly less than half the time</label>
+				<label><input type="radio" id="bad-conscience5" name="bad-conscience" value="1"> Some of the time</label>
+				<label><input type="radio" id="bad-conscience6" name="bad-conscience" value="0"> At no time</label>
+			
+			</div>						
+			<div id="not-worth-living">6. Have you felt that life wasn’t worth living?
+			
+				<label><input type="radio" id="not-worth-living1" name="not-worth-living" value="5"> All the time </label>
+				<label><input type="radio" id="not-worth-living2" name="not-worth-living" value="4"> Most of the time</label>
+				<label><input type="radio" id="not-worth-living3" name="not-worth-living" value="3"> Slightly more than half the time</label>
+				<label><input type="radio" id="not-worth-living4" name="not-worth-living" value="2"> Slightly less than half the time</label>
+				<label><input type="radio" id="not-worth-living5" name="not-worth-living" value="1"> Some of the time</label>
+				<label><input type="radio" id="not-worth-living6" name="not-worth-living" value="0"> At no time</label>
+			
+			</div>
+			<div id="difficulty-concentrating">7. Have you had difficulty in concentrating?
+			
+				<label><input type="radio" id="difficulty-concentrating1" name="difficulty-concentrating" value="5"> All the time </label>
+				<label><input type="radio" id="difficulty-concentrating2" name="difficulty-concentrating" value="4"> Most of the time</label>
+				<label><input type="radio" id="difficulty-concentrating3" name="difficulty-concentrating" value="3"> Slightly more than half the time</label>
+				<label><input type="radio" id="difficulty-concentrating4" name="difficulty-concentrating" value="2"> Slightly less than half the time</label>
+				<label><input type="radio" id="difficulty-concentrating5" name="difficulty-concentrating" value="1"> Some of the time</label>
+				<label><input type="radio" id="difficulty-concentrating6" name="difficulty-concentrating" value="0"> At no time</label>
+			
+			</div>
+			<div id="restless">8. a) Have you felt very restless?
+				
+				<label><input type="radio" id="very-restless1" name="very-restless" value="5"> All the time </label>
+				<label><input type="radio" id="very-restless2" name="very-restless" value="4"> Most of the time</label>
+				<label><input type="radio" id="very-restless3" name="very-restless" value="3"> Slightly more than half the time</label>
+				<label><input type="radio" id="very-restless4" name="very-restless" value="2"> Slightly less than half the time</label>
+				<label><input type="radio" id="very-restless5" name="very-restless" value="1"> Some of the time</label>
+				<label><input type="radio" id="very-restless6" name="very-restless" value="0"> At no time</label>
+				
+			</div>
+			<div id="question">8. b)Have you felt subdued or slowed down?
+			
+				<label><input type="radio" id="subdued-or-slowed1" name="subdued-or-slowed" value="5"> All the time </label>
+				<label><input type="radio" id="subdued-or-slowed2" name="subdued-or-slowed" value="4"> Most of the time</label>
+				<label><input type="radio" id="subdued-or-slowed3" name="subdued-or-slowed" value="3"> Slightly more than half the time</label>
+				<label><input type="radio" id="subdued-or-slowed4" name="subdued-or-slowed" value="2"> Slightly less than half the time</label>
+				<label><input type="radio" id="subdued-or-slowed5" name="subdued-or-slowed" value="1"> Some of the time</label>
+				<label><input type="radio" id="subdued-or-slowed6" name="subdued-or-slowed" value="0"> At no time</label>
+					
+			</div>
+			
+			<div id="trouble-sleeping">9. Have you had trouble sleeping at night?
+			
+				<label><input type="radio" id="trouble-sleeping1" name="trouble-sleeping" value="5"> All the time </label>
+				<label><input type="radio" id="trouble-sleeping2" name="trouble-sleeping" value="4"> Most of the time</label>
+				<label><input type="radio" id="trouble-sleeping3" name="trouble-sleeping" value="3"> Slightly more than half the time</label>
+				<label><input type="radio" id="trouble-sleeping4" name="trouble-sleeping" value="2"> Slightly less than half the time</label>
+				<label><input type="radio" id="trouble-sleeping5" name="trouble-sleeping" value="1"> Some of the time</label>
+				<label><input type="radio" id="trouble-sleeping6" name="trouble-sleeping" value="0"> At no time</label>
+			
+			</div>
+			<div id="reduced-appetite">10. a)Have you suffered from reduced appetite?
+			
+				<label><input type="radio" id="reduced-appetite1" name="reduced-appetite" value="5"> All the time </label>
+				<label><input type="radio" id="reduced-appetite2" name="reduced-appetite" value="4"> Most of the time</label>
+				<label><input type="radio" id="reduced-appetite3" name="reduced-appetite" value="3"> Slightly more than half the time</label>
+				<label><input type="radio" id="reduced-appetite4" name="reduced-appetite" value="2"> Slightly less than half the time</label>
+				<label><input type="radio" id="reduced-appetite5" name="reduced-appetite" value="1"> Some of the time</label>
+				<label><input type="radio" id="reduced-appetite6" name="reduced-appetite" value="0"> At no time</label>
+			
+			</div>
+			<div id="increased-appetite">10. b)Have you suffered from increased appetite?
+
+				<label><input type="radio" id="increased-appetite1" name="increased-appetite" value="5"> All the time </label>
+				<label><input type="radio" id="increased-appetite2" name="increased-appetite" value="4"> Most of the time</label>
+				<label><input type="radio" id="increased-appetite3" name="increased-appetite" value="3"> Slightly more than half the time</label>
+				<label><input type="radio" id="increased-appetite4" name="increased-appetite" value="2"> Slightly less than half the time</label>
+				<label><input type="radio" id="increased-appetite5" name="increased-appetite" value="1"> Some of the time</label>
+				<label><input type="radio" id="increased-appetite6" name="increased-appetite" value="0"> At no time</label>
+			
+			</div>
+			<div id="reminder">
+				<p>The MDI is designed to be taken every two weeks for the duration of your treatment. Would you like to receive an email in two weeks reminding you to take an inventory again?</p>
+				<label>
+					<input type="checkbox" id="reminder" name="reminder" checked> 
+					Remind me in two weeks time
+				</label>
+<!--
+				<label>
+					<input type="checkbox" id="sharepub" name="sharepub" checked> 
+					Share this inventory on the public graph
+				</label>
+-->
+				<input type="hidden" id="remindemail" name="remindemail" value="{{ useremail }}">
+
+
+			</div> <!-- /#reminder -->
+			<button class="submitinventory">Submit Inventory</button>
+		</form>
+	</div>
+    
+    <footer>
+
+    </footer>
+  </div> <!--! end of #container -->
+
+
+  <!-- JavaScript at the bottom for fast page loading -->
+
+  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if necessary -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
+  <script>window.jQuery || document.write("<script src='js/libs/jquery-1.5.1.min.js'>\x3C/script>")</script>
+
+  <script>
+  $(document).ready(function(){
+	// remove the click handler from the tracker bullets
+	$(".track a").click(function(){
+		$("#inventory-form div").hide();
+		goto = $(this).attr("href");
+		$(goto).show();
+		return false;
+	});
+	// hide all the questions
+  	$("#inventory-form div").hide();
+  	// then show the very first one
+  	$("#low-spirits").show().addClass("active");
+  	// attach listener to hide current question and show the next
+    $("#inventory-form div input[type=radio]").change(function(){
+    	$(this).parent().parent().removeClass("active").slideUp().next().addClass("active").slideDown();
+    	cur = $(this).parent().parent().attr("id");
+
+    	$(".track a").each(function(){
+    		menu = $(this).attr("href");
+    		menu = menu.split("#");
+    		
+    		if(menu[1] == cur){
+
+    			$(this).addClass("current");
+    		}
+    	});
+    });
+	// disable the form button until the last question is answered
+    $("#inventory-form button").attr("disabled",true);
+    $("#increased-appetite input").change(function(){
+    	$("#inventory-form button").attr("disabled",false);
+    });
+  });
+  </script>  
+  <!-- scripts concatenated and minified via ant build script -->
+  <script src="js/mylibs/helper.js"></script>
+  <!-- end concatenated and minified scripts-->
+  
+  <script>
+    // iPhone Scale Bug Fix, read this when using http://www.blog.highub.com/mobile-2/a-fix-for-iphone-viewport-scale-bug/
+    MBP.scaleFix();
+    
+    // Media Queries Polyfill https://github.com/shichuan/mobile-html5-boilerplate/wiki/Media-Queries-Polyfill
+    yepnope({
+      test : Modernizr.mq('(min-width)'),
+      nope : ['js/libs/respond.min.js']
+    });
+  </script>
+  
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-23662637-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</body>
+</html>
