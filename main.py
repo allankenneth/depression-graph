@@ -4,7 +4,7 @@
 # Author: Allan Haggett
 
 import os
-
+import md5
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
 from google.appengine.api import taskqueue
@@ -13,8 +13,9 @@ from google.appengine.api import users
 from google.appengine.api import mail
 from google.appengine.ext import db
 
+import datetime
 from time import gmtime, strftime
-
+from datetime import date
 
 class Inventories(db.Model):
     user = db.UserProperty()
@@ -30,7 +31,7 @@ class Inventories(db.Model):
 # into the task queue with the new countdown
 class Reminders(db.Model):
     user = db.UserProperty()
-    reminder = db.IntegerProperty()
+    date = db.DateTimeProperty()
     
 
 
@@ -45,6 +46,11 @@ class MainHandler(webapp.RequestHandler):
             inventories_query.filter("user", user)
             inventories_query.order("date")
             inventories = inventories_query.fetch(100)
+            
+            reminder_query = Reminders.all()
+            reminder_query.filter("user", user)
+            reminder = reminder_query.fetch(10)
+            
             graph = []
             tabled = []
             for test in inventories:
@@ -60,6 +66,7 @@ class MainHandler(webapp.RequestHandler):
                 'message': 'Your Library',
                 'graph': graph,
                 'table': tabled,
+                'reminder': reminder,
                 'url': url,
                 'url_linktext': url_linktext
             }
@@ -83,46 +90,54 @@ class Inventory(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if user:
-            userreg = user.email()
-            k = db.Key(self.request.get('iid'))
-            inventory_query = Inventories.all()
-            inventory_query.filter('__key__ =', k)
-            inventory = inventory_query.fetch(1)
-            # TODO the following should be broken out into its own method(s)
-            answers = []
-            for ans in inventory[0].answers:
-              if ans == 0:
-                  answers.append("At no time (0).")
-              if ans == 1:
-                  answers.append("Some of the time (1).")
-              if ans == 2:
-                  answers.append("Slightly less than half the time (2).")
-              if ans == 3:
-                  answers.append("Slightly more than half the time (3).")
-              if ans == 4:
-                  answers.append("Most of the time (4).")
-              if ans == 5:
-                  answers.append("All of the time (5).")
-            if inventory[0].dsmscore <= 19:
-                diagnoses = "Not depressed."
-            if inventory[0].dsmscore > 19:
-                diagnoses = "Mildly depressed."
-            if inventory[0].dsmscore > 24:
-                diagnoses = "Moderately depressed."
-            if inventory[0].dsmscore > 29:
-                diagnoses = "Severely depressed."
-            
-            yeahdate = inventory[0].date.strftime("%a, %d %b %Y")
-            template_values = {
-                'reminderset': self.request.get('reminderset'),
-                'date': yeahdate,
-                'diagnoses': diagnoses,
-                'score': inventory[0].dsmscore,
-                'answer': answers,
-                'iid': self.request.get('iid')
-            }
-            path = os.path.join(os.path.dirname(__file__), 'views/inventory-complete.html')
-            self.response.out.write(template.render(path, template_values))
+            if(self.request.get('action') == "delete"):
+                user = users.get_current_user()
+                k = db.Key(self.request.get('iid'))
+                db.delete(k)
+                action = '/'
+                self.redirect(action)
+            else:
+
+                userreg = user.email()
+                k = db.Key(self.request.get('iid'))
+                inventory_query = Inventories.all()
+                inventory_query.filter('__key__ =', k)
+                inventory = inventory_query.fetch(1)
+                # TODO the following should be broken out into its own method(s)
+                answers = []
+                for ans in inventory[0].answers:
+                  if ans == 0:
+                      answers.append("At no time (0).")
+                  if ans == 1:
+                      answers.append("Some of the time (1).")
+                  if ans == 2:
+                      answers.append("Slightly less than half the time (2).")
+                  if ans == 3:
+                      answers.append("Slightly more than half the time (3).")
+                  if ans == 4:
+                      answers.append("Most of the time (4).")
+                  if ans == 5:
+                      answers.append("All of the time (5).")
+                if inventory[0].dsmscore <= 19:
+                    diagnoses = "Not depressed."
+                if inventory[0].dsmscore > 19:
+                    diagnoses = "Mildly depressed."
+                if inventory[0].dsmscore > 24:
+                    diagnoses = "Moderately depressed."
+                if inventory[0].dsmscore > 29:
+                    diagnoses = "Severely depressed."
+                
+                yeahdate = inventory[0].date.strftime("%a, %d %b %Y")
+                template_values = {
+                    'reminderset': self.request.get('reminderset'),
+                    'date': yeahdate,
+                    'diagnoses': diagnoses,
+                    'score': inventory[0].dsmscore,
+                    'answer': answers,
+                    'iid': self.request.get('iid')
+                }
+                path = os.path.join(os.path.dirname(__file__), 'views/inventory-complete.html')
+                self.response.out.write(template.render(path, template_values))
         else:
             action = '/'
             self.redirect(action)
@@ -130,14 +145,7 @@ class Inventory(webapp.RequestHandler):
     def post(self):
         user = users.get_current_user()
         if user:
-            if(self.request.get('action') == "delete"):
-              user = users.get_current_user()
-              k = db.Key(self.request.get('iid'))
-              db.delete(k)
-              action = '/'
-              self.redirect(action)
-            else:
-              self.response.out.write("We don't have a post action for this yet.")
+            self.response.out.write("We don't have a post action for this yet.")
         else:
             action = '/'
             self.redirect(action)
@@ -230,17 +238,41 @@ class TakeInventory(webapp.RequestHandler):
         if self.request.get('reminder'):
             # 2 weeks = 1 209 600 seconds
             parameters = {'emailto': self.request.get('remindemail')}
-            taskqueue.add(url='/reminder', countdown=1209600, params=parameters)
+            now = datetime.datetime.now()
+            name = str(now)
+
+            name = md5.md5(name).hexdigest()
+            taskqueue.add(name=name, url='/reminder', countdown=1209600, params=parameters)
             remind = 1
+            
+            alarm = Reminders()
+            alarm.user = user
+            alarm.date = now
+            alarm.put()
         
         action = '/inventory?iid=' + str(entry.key()) + '&reminderset=' + str(remind)
         self.redirect(action)
+        
 
+class RemindersHandler(webapp.RequestHandler):
 
-
-class ReminderEmail(webapp.RequestHandler):
-
-
+    def get(self):
+        user = users.get_current_user()
+        if user:
+            if(self.request.get('action') == "delete"):
+                k = db.Key(self.request.get('key'))
+                getname = Reminders.all()
+                getname.filter('__key__ =', k)
+                name = getname.fetch(1)
+                name = str(name[0].date)
+                name = md5.md5(name).hexdigest()
+                q = taskqueue.Queue('default')
+                q.delete_tasks(taskqueue.Task(name=name))
+                db.delete(k)
+                self.redirect('/');
+            else:
+                self.response.out.write("Whatwhat!?")
+    
     def post(self): 
         inventoryFrom = "allan@hitchless.com"
         inventorySubject = "Take Your Major Depression Inventory"
@@ -357,7 +389,7 @@ application = webapp.WSGIApplication([('/', MainHandler),
                                       ('/inventory', Inventory),
                                       ('/take', TakeInventory),
                                       ('/info', MoreInfo),
-                                      ('/reminder', ReminderEmail),
+                                      ('/reminders', RemindersHandler),
                                       ('/inventory-email', InventoryEmail)],
                                       debug=True)
 def main():

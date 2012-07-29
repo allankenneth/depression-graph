@@ -357,9 +357,10 @@ button {
 	font-size: 12px;
 	text-shadow: 1px 1px 1px #FFF;
 }
-#library form {
+.delete-inventory {
 	background: transparent;
 	border-radius: 10px;
+	color: #CCC;
 	display: inline-block;
 	float: right;
 }

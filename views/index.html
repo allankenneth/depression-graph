@@ -50,13 +50,17 @@
   <div id="container">
 
     <div id="main" role="main">
+    	{% if reminder %}
+		<p>You have a reminder set for {{ reminder.0.date|date:"F j" }} <a href="/reminders?action=delete&key={{ reminder.0.key }}" class="delete-reminder">x</a>.</p>
+		{% endif %}
 
 		<p id="take"><a href="/take">Log an Inventory</a></p>
+		
 		{% if graph %}
 		<div class="grapher">
 		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 	    <script type="text/javascript">
-	      google.load('visualization', '1', {packages: ['corechart']});
+	      google.load('visualization', '1', { packages: ['corechart'] });
 	    </script>
 	    <script type="text/javascript">
 	      function drawVisualization() {
@@ -86,6 +90,7 @@
 	    </script>
 			
 		<div id="visualization" style="width: 290px; height: 240px;"></div>
+
 		</div> <!-- /.grapher -->
 		
 		<ul id="library">
@@ -93,13 +98,9 @@
 		{% for row in table %}
 
 			<li>
-			<a href="/inventory?iid={{ row.2 }}">{{ row.0 }}</a> <span><a href="/inventory?iid={{ row.2 }}">{{ row.1 }}</a></span>
-			<form method="post" action="/inventory">
-				<input type="hidden" name="action" value="delete">
-				<input type="hidden" name="iid" value="{{ row.2 }}">
-				<button>x</button>
-			</form>
-
+			<a href="/inventory?iid={{ row.2 }}">{{ row.0 }}</a> 
+			<span><a href="/inventory?iid={{ row.2 }}">{{ row.1 }}</a></span>
+			<a class="delete-inventory" href="/inventory?action=delete&iid={{ row.2 }}">x</a>
 			</li>
 
 		{% endfor %}
