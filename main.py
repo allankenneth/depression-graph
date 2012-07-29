@@ -16,6 +16,7 @@ from google.appengine.ext import db
 import datetime
 from time import gmtime, strftime
 from datetime import date
+from datetime import timedelta
 
 class Inventories(db.Model):
     user = db.UserProperty()
@@ -239,15 +240,15 @@ class TakeInventory(webapp.RequestHandler):
             # 2 weeks = 1 209 600 seconds
             parameters = {'emailto': self.request.get('remindemail')}
             now = datetime.datetime.now()
-            name = str(now)
-
+            twoweeks = timedelta(days=14)
+            remindin = now + twoweeks
+            name = str(remindin)
             name = md5.md5(name).hexdigest()
             taskqueue.add(name=name, url='/reminder', countdown=1209600, params=parameters)
             remind = 1
-            
             alarm = Reminders()
             alarm.user = user
-            alarm.date = now
+            alarm.date = remindin
             alarm.put()
         
         action = '/inventory?iid=' + str(entry.key()) + '&reminderset=' + str(remind)

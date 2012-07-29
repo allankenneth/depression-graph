@@ -51,7 +51,7 @@
 
     <div id="main" role="main">
     	{% if reminder %}
-		<p>You have a reminder set for {{ reminder.0.date|date:"F j" }} <a href="/reminders?action=delete&key={{ reminder.0.key }}" class="delete-reminder">x</a>.</p>
+		<p>You have a reminder set for {{ reminder.0.date|date:"F jS" }}. <a href="/reminders?action=delete&key={{ reminder.0.key }}" class="cancel-reminder">cancel</a></p>
 		{% endif %}
 
 		<p id="take"><a href="/take">Log an Inventory</a></p>

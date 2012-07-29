@@ -542,3 +542,12 @@ footer {
 
 
 
+.cancel-reminder {
+	background: #FFF;
+	border-radius: 3px;
+	display: inline-block;
+	font-size: 9px;
+	line-height: 14px;
+	margin-left: 10px;
+	padding: 0 5px;
+}
