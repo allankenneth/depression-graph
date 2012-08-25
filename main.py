@@ -385,12 +385,20 @@ class MoreInfo(webapp.RequestHandler):
         path = os.path.join(os.path.dirname(__file__), 'views/info.html')
         self.response.out.write(template.render(path, {}))
 
+class Privacy(webapp.RequestHandler):
+    
+    
+    def get(self):
+        path = os.path.join(os.path.dirname(__file__), 'views/privacy.html')
+        self.response.out.write(template.render(path, {}))
+
 
 application = webapp.WSGIApplication([('/', MainHandler),
                                       ('/inventory', Inventory),
+                                      ('/privacy', Privacy),
                                       ('/take', TakeInventory),
                                       ('/info', MoreInfo),
-                                      ('/reminders', RemindersHandler),
+                                      ('/reminder', RemindersHandler),
                                       ('/inventory-email', InventoryEmail)],
                                       debug=True)
 def main():

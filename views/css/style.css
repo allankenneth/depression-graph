@@ -274,7 +274,16 @@ button {
 	text-align: center;
 	text-transform: uppercase;
 }
-#more {
+.menu {
+	margin: 0;
+	padding: 0;
+}
+.menu li {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+.menu li a {
 	background: rgba(255,255,255,.65);
 	border-radius: 5px;
 	display: block;
@@ -500,7 +509,7 @@ footer {
 			color-stop(0.5, #000000),
 			to(#000));
 */
-	border-top: 1px solid #858585;
+	border-top: 1px solid #000;
 	border-bottom: 1px solid #858585; 
 	color: #FFF;
 	height: 45px;
