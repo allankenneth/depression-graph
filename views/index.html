@@ -54,9 +54,9 @@
             <span class="icon-bar"></span>
           </button>
           <a class="brand" href="/">Depression Graph</a>
-          <a class="btn pull-right btn-primary" href="/take">Take Test</a>
+
           <div class="nav-collapse collapse">
-            
+          <a class="btn pull-right btn-primary" href="/take">Take Test</a>
             <ul class="nav">
               <li>
               	<a href="/list">List Inventories</a>
@@ -115,6 +115,8 @@
 		</div> <!-- /.grapher -->
 		
 		{% endif %}
+		<hr>
+		<a class="btn btn-primary btn-large" href="/take">Take a Test</a>
     	{% if reminder %}
     	<hr>
 		<p>You have a reminder set for {{ reminder.0.date|date:"F jS" }}. <a href="/reminder?action=delete&key={{ reminder.0.key }}" class="btn btn-mini">cancel</a></p>
@@ -133,7 +135,8 @@
   <!-- JavaScript at the bottom for fast page loading -->
 
   <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if necessary -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
+  <script src="//code.jquery.com/jquery-1.8.0.min.js"></script>
+  <script src="/js/bootstrap.js"></script>
   <script>
   	$(document).ready(function(){
   		$('a').click(function() {	 
@@ -142,15 +145,14 @@
 		});
   	});
   </script>
+
   <script>window.jQuery || document.write("<script src='js/libs/jquery-1.5.1.min.js'>\x3C/script>")</script>
   
-  <!-- scripts concatenated and minified via ant build script -->
-  <script src="js/mylibs/helper.js"></script>
-  <!-- end concatenated and minified scripts-->
+
   
   <script>
     // iPhone Scale Bug Fix, read this when using http://www.blog.highub.com/mobile-2/a-fix-for-iphone-viewport-scale-bug/
-    MBP.scaleFix();
+    //MBP.scaleFix();
     
     // Media Queries Polyfill https://github.com/shichuan/mobile-html5-boilerplate/wiki/Media-Queries-Polyfill
     yepnope({
