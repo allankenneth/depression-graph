@@ -34,8 +34,9 @@
   <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
   <meta http-equiv="cleartype" content="on">
   
-  <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=1">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/bootstrap-responsive.css">
+  <link rel="stylesheet" href="css/depression-graph.css">
  
   <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
   <script src="js/libs/modernizr-custom.js"></script>
@@ -43,36 +44,61 @@
 </head>
 
 <body>
-<div id="top" class="navigation-bar black">
-<div class="button bordered back"><a href="/">Home</a></div>
-<span class="track">
-	<a href="#low-spirits" title="1. Have you felt low in spirits or sad?">&bull;</a>
-	<a href="#lost-interest" title="2. Have you lost interest in your daily activities?">&bull;</a>
-	<a href="#lacking-energy" title="3. Have you felt lacking in energy and strength?">&bull;</a>
-	<a href="#less-self-confident" title="4. Have you felt less self-confident?">&bull;</a>
-	<a href="#bad-conscience" title="5. Have you had a bad conscience or feelings of guilt?">&bull;</a>
-	<a href="#not-worth-living" title="6. Have you felt that life wasn’t worth living?">&bull;</a>
-	<a href="#difficulty-concentrating" title="7. Have you had difficulty in concentrating?">&bull;</a>
-	<a href="#restless" title="8. a) Have you felt very restless?">&bull;</a>
-	<a href="#question" title="8. b)Have you felt subdued or slowed down?">&bull;</a>
-	<a href="#trouble-sleeping" title="9. Have you had trouble sleeping at night?">&bull;</a>
-	<a href="#reduced-appetite" title="10. a)Have you suffered from reduced appetite?">&bull;</a>
-	<a href="#increased-appetite" title="10. b)Have you suffered from increased appetite?">&bull;</a>
-</span>
-	
-</div>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="/">Depression Graph</a>
+          <div class="nav-collapse collapse">
+<!--             <a class="btn pull-right btn-primary" href="/take">Take Test</a> -->
+            <ul class="nav">
+<!--
+              <li>
+              	<a href="/">Home</a>
+              </li>
+-->
+              <li>
+              	<a href="/list">List Inventories</a>
+              </li>
+              <li>
+              	<a id="more" href="/info">Info</a>
+              </li>
+              <li>
+              	<a href="/privacy">Privacy</a>
+              </li>	
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
   <div id="container">
-    <header>
 
-
-    </header>
     <div id="main" role="main">
-
+	  <div class="track">
+		<a href="#low-spirits" title="1. Have you felt low in spirits or sad?">&bull;</a>
+		<a href="#lost-interest" title="2. Have you lost interest in your daily activities?">&bull;</a>
+		<a href="#lacking-energy" title="3. Have you felt lacking in energy and strength?">&bull;</a>
+		<a href="#less-self-confident" title="4. Have you felt less self-confident?">&bull;</a>
+		<a href="#bad-conscience" title="5. Have you had a bad conscience or feelings of guilt?">&bull;</a>
+		<a href="#not-worth-living" title="6. Have you felt that life wasn’t worth living?">&bull;</a>
+		<a href="#difficulty-concentrating" title="7. Have you had difficulty in concentrating?">&bull;</a>
+		<a href="#restless" title="8. a) Have you felt very restless?">&bull;</a>
+		<a href="#subdued" title="8. b)Have you felt subdued or slowed down?">&bull;</a>
+		<a href="#trouble-sleeping" title="9. Have you had trouble sleeping at night?">&bull;</a>
+		<a href="#reduced-appetite" title="10. a)Have you suffered from reduced appetite?">&bull;</a>
+		<a href="#increased-appetite" title="10. b)Have you suffered from increased appetite?">&bull;</a>
+	  </div>
 		<form id="inventory-form" action="/take" method="post">
+			<p class="pastweeks">In the past two weeks:</p>
 
-			<div id="low-spirits">
-			<p>In the past two weeks:</p>
-			1. Have you felt low in spirits or sad?
+			<div class="question" id="low-spirits">
+			<div class="questiontext">1. Have you felt low in spirits or sad?</div>
 			
 				<label><input type="radio" id="low-spirits1" name="low-spirits" value="5" value="5"> All the time </label>
 				<label><input type="radio" id="low-spirits2" name="low-spirits" value="4"> Most of the time</label>
@@ -83,7 +109,8 @@
 			
 			</div>
 			
-			<div id="lost-interest">2. Have you lost interest in your daily activities?
+			<div class="question" id="lost-interest">
+			<div class="questiontext">2. Have you lost interest in your daily activities?</div>
 			
 				<label><input type="radio" id="lost-interest1" name="lost-interest" value="5"> All the time </label>
 				<label><input type="radio" id="lost-interest2" name="lost-interest" value="4"> Most of the time</label>
@@ -94,7 +121,8 @@
 			
 			</div>
 			
-			<div id="lacking-energy">3. Have you felt lacking in energy and strength?
+			<div class="question" id="lacking-energy">
+			<div class="questiontext">3. Have you felt lacking in energy and strength?</div>
 			
 				<label><input type="radio" id="lacking-energy1" name="lacking-energy" value="5"> All the time </label>
 				<label><input type="radio" id="lacking-energy2" name="lacking-energy" value="4"> Most of the time</label>
@@ -105,7 +133,8 @@
 			
 			</div>						
 			
-			<div id="less-self-confident">4. Have you felt less self-confident?
+			<div class="question" id="less-self-confident">
+			<div class="questiontext">4. Have you felt less self-confident?</div>
 			
 				<label><input type="radio" id="less-self-confident1" name="less-self-confident" value="5"> All the time </label>
 				<label><input type="radio" id="less-self-confident2" name="less-self-confident" value="4"> Most of the time</label>
@@ -115,7 +144,8 @@
 				<label><input type="radio" id="less-self-confident6" name="less-self-confident" value="0"> At no time</label>
 			
 			</div>						
-			<div id="bad-conscience">5. Have you had a bad conscience or feelings of guilt?
+			<div class="question" id="bad-conscience">
+			<div class="questiontext">5. Have you had a bad conscience or feelings of guilt?</div>
 			
 				<label><input type="radio" id="bad-conscience1" name="bad-conscience" value="5"> All the time </label>
 				<label><input type="radio" id="bad-conscience2" name="bad-conscience" value="4"> Most of the time</label>
@@ -125,7 +155,8 @@
 				<label><input type="radio" id="bad-conscience6" name="bad-conscience" value="0"> At no time</label>
 			
 			</div>						
-			<div id="not-worth-living">6. Have you felt that life wasn’t worth living?
+			<div class="question" id="not-worth-living">
+			<div class="questiontext">6. Have you felt that life wasn’t worth living?</div>
 			
 				<label><input type="radio" id="not-worth-living1" name="not-worth-living" value="5"> All the time </label>
 				<label><input type="radio" id="not-worth-living2" name="not-worth-living" value="4"> Most of the time</label>
@@ -135,7 +166,8 @@
 				<label><input type="radio" id="not-worth-living6" name="not-worth-living" value="0"> At no time</label>
 			
 			</div>
-			<div id="difficulty-concentrating">7. Have you had difficulty in concentrating?
+			<div class="question" id="difficulty-concentrating">
+			<div class="questiontext">7. Have you had difficulty in concentrating?</div>
 			
 				<label><input type="radio" id="difficulty-concentrating1" name="difficulty-concentrating" value="5"> All the time </label>
 				<label><input type="radio" id="difficulty-concentrating2" name="difficulty-concentrating" value="4"> Most of the time</label>
@@ -145,7 +177,8 @@
 				<label><input type="radio" id="difficulty-concentrating6" name="difficulty-concentrating" value="0"> At no time</label>
 			
 			</div>
-			<div id="restless">8. a) Have you felt very restless?
+			<div class="question" id="restless">
+			<div class="questiontext">8. a) Have you felt very restless?</div>
 				
 				<label><input type="radio" id="very-restless1" name="very-restless" value="5"> All the time </label>
 				<label><input type="radio" id="very-restless2" name="very-restless" value="4"> Most of the time</label>
@@ -155,7 +188,8 @@
 				<label><input type="radio" id="very-restless6" name="very-restless" value="0"> At no time</label>
 				
 			</div>
-			<div id="question">8. b)Have you felt subdued or slowed down?
+			<div class="question" id="subdued">
+			<div class="questiontext">8. b)Have you felt subdued or slowed down?</div>
 			
 				<label><input type="radio" id="subdued-or-slowed1" name="subdued-or-slowed" value="5"> All the time </label>
 				<label><input type="radio" id="subdued-or-slowed2" name="subdued-or-slowed" value="4"> Most of the time</label>
@@ -166,7 +200,8 @@
 					
 			</div>
 			
-			<div id="trouble-sleeping">9. Have you had trouble sleeping at night?
+			<div class="question" id="trouble-sleeping">
+			<div class="questiontext">9. Have you had trouble sleeping at night?</div>
 			
 				<label><input type="radio" id="trouble-sleeping1" name="trouble-sleeping" value="5"> All the time </label>
 				<label><input type="radio" id="trouble-sleeping2" name="trouble-sleeping" value="4"> Most of the time</label>
@@ -176,7 +211,8 @@
 				<label><input type="radio" id="trouble-sleeping6" name="trouble-sleeping" value="0"> At no time</label>
 			
 			</div>
-			<div id="reduced-appetite">10. a)Have you suffered from reduced appetite?
+			<div class="question" id="reduced-appetite">
+			<div class="questiontext">10. a)Have you suffered from reduced appetite?</div>
 			
 				<label><input type="radio" id="reduced-appetite1" name="reduced-appetite" value="5"> All the time </label>
 				<label><input type="radio" id="reduced-appetite2" name="reduced-appetite" value="4"> Most of the time</label>
@@ -186,7 +222,8 @@
 				<label><input type="radio" id="reduced-appetite6" name="reduced-appetite" value="0"> At no time</label>
 			
 			</div>
-			<div id="increased-appetite">10. b)Have you suffered from increased appetite?
+			<div class="question" id="increased-appetite">
+			<div class="questiontext">10. b)Have you suffered from increased appetite?</div>
 
 				<label><input type="radio" id="increased-appetite1" name="increased-appetite" value="5"> All the time </label>
 				<label><input type="radio" id="increased-appetite2" name="increased-appetite" value="4"> Most of the time</label>
@@ -196,7 +233,7 @@
 				<label><input type="radio" id="increased-appetite6" name="increased-appetite" value="0"> At no time</label>
 			
 			</div>
-			<div id="reminder">
+			<div id="remind">
 				<p>The MDI is designed to be taken every two weeks for the duration of your treatment. Would you like to receive an email in two weeks reminding you to take an inventory again?</p>
 				<label>
 					<input type="checkbox" id="reminder" name="reminder" checked> 
@@ -209,11 +246,13 @@
 				</label>
 -->
 				<input type="hidden" id="remindemail" name="remindemail" value="{{ useremail }}">
-
+			<button class="btn btn-large btn-primary">Submit Inventory</button>
 
 			</div> <!-- /#reminder -->
-			<button class="submitinventory">Submit Inventory</button>
+
+
 		</form>
+
 	</div>
     
     <footer>
@@ -232,18 +271,18 @@
   $(document).ready(function(){
 	// remove the click handler from the tracker bullets
 	$(".track a").click(function(){
-		$("#inventory-form div").hide();
+		$(".question").hide();
 		goto = $(this).attr("href");
 		$(goto).show();
 		return false;
 	});
 	// hide all the questions
-  	$("#inventory-form div").hide();
+  	$(".question, #remind").hide();
   	// then show the very first one
   	$("#low-spirits").show().addClass("active");
   	// attach listener to hide current question and show the next
     $("#inventory-form div input[type=radio]").change(function(){
-    	$(this).parent().parent().removeClass("active").slideUp().next().addClass("active").slideDown();
+    	$(this).parent().parent().removeClass("active").hide().next().addClass("active").show();
     	cur = $(this).parent().parent().attr("id");
 
     	$(".track a").each(function(){
@@ -263,13 +302,10 @@
     });
   });
   </script>  
-  <!-- scripts concatenated and minified via ant build script -->
-  <script src="js/mylibs/helper.js"></script>
-  <!-- end concatenated and minified scripts-->
   
   <script>
     // iPhone Scale Bug Fix, read this when using http://www.blog.highub.com/mobile-2/a-fix-for-iphone-viewport-scale-bug/
-    MBP.scaleFix();
+    //MBP.scaleFix();
     
     // Media Queries Polyfill https://github.com/shichuan/mobile-html5-boilerplate/wiki/Media-Queries-Polyfill
     yepnope({

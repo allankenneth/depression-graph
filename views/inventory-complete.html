@@ -36,17 +36,42 @@
   <meta name="robots" content="noindex">
 	<!-- more tags for your 'head' to consider https://gist.github.com/849231 -->
   
-  <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=1">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/bootstrap-responsive.css">
+  <link rel="stylesheet" href="css/depression-graph.css">
  
   <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
   <script src="js/libs/modernizr-custom.js"></script>
 </head>
 
 <body>
-<div id="top" class="navigation-bar black">
-<div class="button bordered back"><a href="/">Home</a></div>
-</div>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="/">Depression Graph</a>
+          <a class="btn pull-right btn-primary" href="/take">Take Test</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li>
+              	<a href="/list">List Inventories</a>
+              </li>
+              <li>
+              	<a id="more" href="/info">Info</a>
+              </li>
+              <li>
+              	<a href="/privacy">Privacy</a>
+              </li>
+				
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
   <div id="container">
     <header>
 		{% if reminderset %}
@@ -92,16 +117,16 @@
 	    
 	    <div id="visualization" style="width: 260px; height: 260px;"></div>
 	    </div> <!-- /.grapher -->
-		<form id="email-inventory" method="post" action="/inventory-email">
-			<div>
+		<form id="email-inventory" class="form-inline" method="post" action="/inventory-email">
+
 				<label>
 					Send to: 
-					<input placeholder="email@address.com" type="email" name="emailto" size="20">
+					<input placeholder="email@address.com" type="email" class="mailto" name="emailto" size="15">
 				</label>
 				<input type="hidden" name="iid" value="{{ iid }}">
 				<input type="hidden" name="message" value="Score: {{ score }}">
-				<button>Send</button>
-			</div>
+				<button class="btn btn-success">Send</button>
+
 		</form>
 		
 		<h2>Answers</h2>

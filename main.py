@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-#
 # MAJOR DEPRESSION INVENTORY - DepressionGraph.com
 # Author: Allan Haggett
 
@@ -53,27 +51,23 @@ class MainHandler(webapp.RequestHandler):
             reminder = reminder_query.fetch(10)
             
             graph = []
-            tabled = []
             for test in inventories:
                 graphdate = test.date.strftime("%b %d")
                 graph.append([graphdate,test.dsmscore,test.key()])
-                tabledate = test.date.strftime("%b %d %Y")
-                tabled.append([tabledate,test.dsmscore,test.key()])
-            tabled.reverse()
+
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
             template_values = {
                 'userreg': userreg,
                 'message': 'Your Library',
                 'graph': graph,
-                'table': tabled,
                 'reminder': reminder,
                 'url': url,
                 'url_linktext': url_linktext
             }
             path = os.path.join(os.path.dirname(__file__), 'views/index.html')
             self.response.out.write(template.render(path, template_values))
-#             self.response.out.write(graph.date)
+
         else:
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
@@ -84,6 +78,53 @@ class MainHandler(webapp.RequestHandler):
             }
             path = os.path.join(os.path.dirname(__file__), 'views/login.html')
             self.response.out.write(template.render(path, template_values))
+
+
+class ListInventories(webapp.RequestHandler):
+    
+    
+    def get(self):
+        user = users.get_current_user()
+        if user:
+            userreg = user.nickname()
+            inventories_query = Inventories.all()
+            inventories_query.filter("user", user)
+            inventories_query.order("date")
+            inventories = inventories_query.fetch(100)
+            
+            reminder_query = Reminders.all()
+            reminder_query.filter("user", user)
+            reminder = reminder_query.fetch(10)
+            
+            tabled = []
+            for test in inventories:
+                #tabledate = test.date.strftime("%b %d %Y")
+                tabledate = test.date
+                tabled.append([tabledate,test.dsmscore,test.key()])
+            tabled.reverse()
+            url = users.create_logout_url(self.request.uri)
+            url_linktext = 'Logout'
+            template_values = {
+                'userreg': userreg,
+                'message': 'Your Library',
+                'table': tabled,
+                'reminder': reminder,
+                'url': url,
+                'url_linktext': url_linktext
+            }
+            path = os.path.join(os.path.dirname(__file__), 'views/list.html')
+            self.response.out.write(template.render(path, template_values))
+        else:
+            url = users.create_login_url(self.request.uri)
+            url_linktext = 'Login'
+            template_values = {
+                'url': url,
+                'url_linktext': url_linktext,
+                'message': 'Welcome'
+            }
+            path = os.path.join(os.path.dirname(__file__), 'views/login.html')
+            self.response.out.write(template.render(path, template_values))
+
 
 class Inventory(webapp.RequestHandler):
 
@@ -394,6 +435,7 @@ class Privacy(webapp.RequestHandler):
 
 
 application = webapp.WSGIApplication([('/', MainHandler),
+                                      ('/list', ListInventories),
                                       ('/inventory', Inventory),
                                       ('/privacy', Privacy),
                                       ('/take', TakeInventory),

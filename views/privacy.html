@@ -7,7 +7,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Depression Graph</title>
+  <title>Depression Graph Privacy Policy</title>
   <meta name="description" content="Depression Graph: A personal record of major depression inventories. Track, share, get better.">
   <meta name="author" content="Allan Haggett">
   
@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/bootstrap-responsive.css">
   <link rel="stylesheet" href="css/depression-graph.css">
-   
+ 
   <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
   <script src="js/libs/modernizr-custom.js"></script>
 </head>
@@ -54,78 +54,43 @@
             <span class="icon-bar"></span>
           </button>
           <a class="brand" href="/">Depression Graph</a>
-          <a class="btn pull-right btn-primary" href="/take">Take Test</a>
+            <a class="btn pull-right btn-primary" href="/take">Take Test</a>
           <div class="nav-collapse collapse">
-            
+
             <ul class="nav">
+<!--
+              <li>
+              	<a href="/">Home</a>
+              </li>
+-->
               <li>
               	<a href="/list">List Inventories</a>
               </li>
               <li>
               	<a id="more" href="/info">Info</a>
               </li>
-              <li>
+              <li class="active">
               	<a href="/privacy">Privacy</a>
-              </li>
-				
+              </li>	
             </ul>
           </div>
+
         </div>
       </div>
     </div>
+
+
   <div id="container">
 
     <div id="main" role="main">
-		
-		{% if graph %}
-		<div class="grapher">
-		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
-	    <script type="text/javascript">
-	      google.load('visualization', '1', { packages: ['corechart'] });
-	    </script>
-	    <script type="text/javascript">
-	      function drawVisualization() {
-	        // Create and populate the data table.
-	        var data = new google.visualization.DataTable();
-	        data.addColumn('string', 'x');
-	        data.addColumn('number', 'Score');
-	        
-	        {% for point in graph %}
-	        data.addRow(["{{ point.0 }}", {{ point.1 }}]);
-	        {% endfor %}
-	        
-	        // Create and draw the visualization.
-	        new google.visualization.LineChart(document.getElementById('visualization')).
-	            draw(data, {curveType: "function",
-	                        width: 290, height: 220,
-	                        chartArea: {left: 20, top: 15, width: '90%', height: '90%;'},
-	                        vAxis: {maxValue: '50'},
-	                        legend: {position: 'none'},
-	                        animation:{duration: 1000,easing: 'out'}
-	                        }
-	                );
-	      }
-	      
-	
-	      google.setOnLoadCallback(drawVisualization);
-	    </script>
-			
-		<div id="visualization" style="width: 290px; height: 200px; overflow: hidden"></div>
+		<h1>Privacy Policy</h1>
+    	<p>When you log an inventory, your test results are stored unencrypted on Google's servers, specifically in an "App Engine Datastore." The results are stored with an identifier that is unique to your Google account. This is done so that this program can work properly, and your data persist across devices and time. If you are uncomfortable storing your test results on Google's servers, please do not use this program. I am investigating a method to encrypt the data for an added level of security.</p>
+    	
+    	<p>I will never use your information for any purpose that directly identifies you. I may, at some point, and likely for academic purposes, anonymize the database and use it for statistical analysis for any number of ends, but there will never any tie to you personally.</p>
 
-		</div> <!-- /.grapher -->
-		
-		{% endif %}
-    	{% if reminder %}
-    	<hr>
-		<p>You have a reminder set for {{ reminder.0.date|date:"F jS" }}. <a href="/reminder?action=delete&key={{ reminder.0.key }}" class="btn btn-mini">cancel</a></p>
-		{% endif %}
-    </div>
-<!--     http://en.wikipedia.org/wiki/Major_Depression_Inventory -->
 
     <footer>
-		<hr>
-    	<p>Signed in as: {{ userreg }}.</p>
-		<p id="logout"><a class="btn btn-mini" href="{{ url }}">{{ url_linktext }}</a></p>
+		<p id="logout"><a href="{{ url }}">{{ url_linktext }}</a></p>
     </footer>
   </div> <!--! end of #container -->
 

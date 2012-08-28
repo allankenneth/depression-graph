@@ -36,18 +36,46 @@
 	
 	<!-- more tags for your 'head' to consider https://gist.github.com/849231 -->
   
-  <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=1">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/bootstrap-responsive.css">
+  <link rel="stylesheet" href="css/depression-graph.css">
  
   <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
   <script src="js/libs/modernizr-custom.js"></script>
 </head>
 
 <body>
-<div id="top" class="navigation-bar black">
-<div class="button bordered back"><a href="/">Home</a></div>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="/">Depression Graph</a>
+            <a class="btn pull-right btn-primary" href="/take">Take Test</a>
+          <div class="nav-collapse collapse">
 
-</div>
+            <ul class="nav">
+
+              <li>
+              	<a href="/list">List Inventories</a>
+              </li>
+              <li class="active">
+              	<a href="/info">Info</a>
+              </li>
+              <li>
+              	<a href="/privacy">Privacy</a>
+              </li>	
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
   <div id="container">
     <header>
 		

@@ -1,0 +1,30 @@
+body {
+	padding-top: 60px;
+}
+#container {
+	margin: 0 auto;
+	width: 320px;
+}
+.track {
+	font-size: 40px;
+}
+a.current {
+	color: red;
+}
+.pastweeks {
+	font-size: 24px;
+	margin: 10px 0;
+}
+.question {
+	margin: 10px 0;
+}
+.questiontext { 
+	font-size: 18px;
+	margin: 10px 0;
+}
+.diagnoses {
+	font-size: 22px;
+}
+.mailto {
+	width: 180px;
+}

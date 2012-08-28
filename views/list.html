@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/bootstrap-responsive.css">
   <link rel="stylesheet" href="css/depression-graph.css">
-   
+ 
   <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
   <script src="js/libs/modernizr-custom.js"></script>
 </head>
@@ -56,9 +56,8 @@
           <a class="brand" href="/">Depression Graph</a>
           <a class="btn pull-right btn-primary" href="/take">Take Test</a>
           <div class="nav-collapse collapse">
-            
             <ul class="nav">
-              <li>
+              <li class="active">
               	<a href="/list">List Inventories</a>
               </li>
               <li>
@@ -76,54 +75,26 @@
   <div id="container">
 
     <div id="main" role="main">
-		
-		{% if graph %}
-		<div class="grapher">
-		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
-	    <script type="text/javascript">
-	      google.load('visualization', '1', { packages: ['corechart'] });
-	    </script>
-	    <script type="text/javascript">
-	      function drawVisualization() {
-	        // Create and populate the data table.
-	        var data = new google.visualization.DataTable();
-	        data.addColumn('string', 'x');
-	        data.addColumn('number', 'Score');
-	        
-	        {% for point in graph %}
-	        data.addRow(["{{ point.0 }}", {{ point.1 }}]);
-	        {% endfor %}
-	        
-	        // Create and draw the visualization.
-	        new google.visualization.LineChart(document.getElementById('visualization')).
-	            draw(data, {curveType: "function",
-	                        width: 290, height: 220,
-	                        chartArea: {left: 20, top: 15, width: '90%', height: '90%;'},
-	                        vAxis: {maxValue: '50'},
-	                        legend: {position: 'none'},
-	                        animation:{duration: 1000,easing: 'out'}
-	                        }
-	                );
-	      }
-	      
-	
-	      google.setOnLoadCallback(drawVisualization);
-	    </script>
-			
-		<div id="visualization" style="width: 290px; height: 200px; overflow: hidden"></div>
 
-		</div> <!-- /.grapher -->
-		
-		{% endif %}
-    	{% if reminder %}
-    	<hr>
-		<p>You have a reminder set for {{ reminder.0.date|date:"F jS" }}. <a href="/reminder?action=delete&key={{ reminder.0.key }}" class="btn btn-mini">cancel</a></p>
+
+<!-- 		<p id="take"><a href="/take">Log an Inventory</a></p> -->
+
+<!-- 		<ul id="library"> -->
+		{% for row in table %}
+			<div class="well well-small">
+			<a href="/inventory?iid={{ row.2 }}">{{ row.0|date:"l, F jS" }}</a> 
+<!-- 			<span><a href="/inventory?iid={{ row.2 }}">{{ row.1 }}</a></span> -->
+			<a class="delete-inventory btn btn-mini pull-right" href="/inventory?action=delete&iid={{ row.2 }}">delete</a>
+			</div>
+		{% endfor %}
+<!-- 		</ul> -->
+		<hr>
+		    	{% if reminder %}
+		<p>You have a reminder set for {{ reminder.0.date|date:"F jS" }}. <a href="/reminder?action=delete&key={{ reminder.0.key }}" class="cancel-reminder btn btn-mini">cancel</a></p>
 		{% endif %}
     </div>
-<!--     http://en.wikipedia.org/wiki/Major_Depression_Inventory -->
 
     <footer>
-		<hr>
     	<p>Signed in as: {{ userreg }}.</p>
 		<p id="logout"><a class="btn btn-mini" href="{{ url }}">{{ url_linktext }}</a></p>
     </footer>
