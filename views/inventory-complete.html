@@ -54,9 +54,12 @@
             <span class="icon-bar"></span>
           </button>
           <a class="brand" href="/">Depression Graph</a>
-          <a class="btn pull-right btn-primary" href="/take">Take Test</a>
+
           <div class="nav-collapse collapse">
             <ul class="nav">
+            <li>
+            	<a href="/take">Take Test</a>
+            </li>
               <li>
               	<a href="/list">List Inventories</a>
               </li>
@@ -72,13 +75,10 @@
         </div>
       </div>
     </div>
-  <div id="container">
-    <header>
-		{% if reminderset %}
-<!-- 		<p>{{reminderset}}You'll receive a reminder to take another inventory in two weeks time.</p> -->
-		{% endif %}
-    </header>
-    <div id="main" role="main">
+
+        <div class="container-fluid">
+      <div class="row-fluid">
+
 <!-- 		<h1>{{ date }}</h1> -->
 <!-- 		<p class="score">{{ score }}</p> -->
 		<p id="takenon">On {{ date }} the result was:</p>

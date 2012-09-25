@@ -863,6 +863,8 @@
 }
 
 @media (max-width: 480px) {
+.hero-unit { padding: 15px;}
+.hero-unit h1 {font-size: 28px; }
   body {
   	padding-top: 0;
   }

@@ -276,23 +276,30 @@ class TakeInventory(webapp.RequestHandler):
         entry.answers = allanswers
         entry.dsmscore = totalscore
         entry.put()
+        entrykey = str(entry.key())
         remind = 0
         if self.request.get('reminder'):
-            # 2 weeks = 1 209 600 seconds
-            parameters = {'emailto': self.request.get('remindemail')}
+
             now = datetime.datetime.now()
             twoweeks = timedelta(days=14)
             remindin = now + twoweeks
-            name = str(remindin)
-            name = md5.md5(name).hexdigest()
-            taskqueue.add(name=name, url='/reminder', countdown=1209600, params=parameters)
+            
             remind = 1
             alarm = Reminders()
             alarm.user = user
             alarm.date = remindin
             alarm.put()
+            remindkey = alarm.key()
+            
+            # 2 weeks = 1 209 600 seconds
+            parameters = {'emailto': self.request.get('remindemail'), 'key': remindkey}
+
+            name = str(remindin)
+            name = md5.md5(name).hexdigest()
+            taskqueue.add(name=name, url='/reminder', countdown=1209600, params=parameters)
+
         
-        action = '/inventory?iid=' + str(entry.key()) + '&reminderset=' + str(remind)
+        action = '/inventory?iid=' + entrykey + '&reminderset=' + str(remind)
         self.redirect(action)
         
 
@@ -323,6 +330,10 @@ class RemindersHandler(webapp.RequestHandler):
         message.to = self.request.get('emailto')
         message.body = """Take an inventory: http://depressiongraph.appspot.com"""
         message.send()
+        
+        k = db.Key(self.request.get('key'))
+        db.delete(k)        
+        
         self.response.out.write("sent")
 
 class InventoryEmail(webapp.RequestHandler):
@@ -423,15 +434,34 @@ class MoreInfo(webapp.RequestHandler):
 
 
     def get(self):
+        user = users.get_current_user()
+        if user:
+            userreg = user.nickname()
+        else: 
+            userreg = 0
+        template_values = {
+            'user': userreg,
+        }
         path = os.path.join(os.path.dirname(__file__), 'views/info.html')
-        self.response.out.write(template.render(path, {}))
+        self.response.out.write(template.render(path, template_values))
 
 class Privacy(webapp.RequestHandler):
     
     
     def get(self):
+        user = users.get_current_user()
+        if user:
+            userreg = user.nickname()
+        else: 
+            userreg = 0
+        template_values = {
+            'user': userreg,
+        }
         path = os.path.join(os.path.dirname(__file__), 'views/privacy.html')
-        self.response.out.write(template.render(path, {}))
+        self.response.out.write(template.render(path, template_values))
+
+#        path = os.path.join(os.path.dirname(__file__), 'views/privacy.html')
+#        self.response.out.write(template.render(path, {}))
 
 
 application = webapp.WSGIApplication([('/', MainHandler),

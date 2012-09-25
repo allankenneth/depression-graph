@@ -56,8 +56,11 @@
           <a class="brand" href="/">Depression Graph</a>
 
           <div class="nav-collapse collapse">
-          <a class="btn pull-right btn-primary" href="/take">Take Test</a>
+
             <ul class="nav">
+            <li>
+            	<a href="/take">Take Test</a>
+            </li>
               <li class="active">
               	<a href="/list">List Inventories</a>
               </li>
@@ -73,9 +76,9 @@
         </div>
       </div>
     </div>
-  <div id="container">
+        <div class="container-fluid">
+      <div class="row-fluid">
 
-    <div id="main" role="main">
 
 
 <!-- 		<p id="take"><a href="/take">Log an Inventory</a></p> -->
@@ -92,7 +95,9 @@
 		<hr>
 		    	{% if reminder %}
 		<p>You have a reminder set for {{ reminder.0.date|date:"F jS" }}. <a href="/reminder?action=delete&key={{ reminder.0.key }}" class="cancel-reminder btn btn-mini">cancel</a></p>
+		<hr>
 		{% endif %}
+
     </div>
 
     <footer>

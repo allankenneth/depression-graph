@@ -56,12 +56,15 @@
           <a class="brand" href="/">Depression Graph</a>
 
           <div class="nav-collapse collapse">
-            <a class="btn pull-right btn-primary" href="/take">Take Test</a>
-            <ul class="nav">
 
-              <li>
+            <ul class="nav">
+            {% if user %}
+            <li>
+            	<a href="/take">Take Test</a>
+            </li>              <li>
               	<a href="/list">List Inventories</a>
               </li>
+              {% endif %}
               <li class="active">
               	<a href="/info">Info</a>
               </li>
@@ -76,21 +79,17 @@
     </div>
 
 
-  <div id="container">
-    <header>
-		
-    </header>
-    <div id="main" role="main">
+        <div class="container-fluid">
+      <div class="row-fluid">
+      	<div class="span6">
+      	<h1>What is the MDI?</h1>
 		<p>The Major Depression Inventory (MDI) is a self-report mood questionnaire developed by the World Health Organisation. The instrument was constructed by a team led by Professor Per Bech, a psychiatrist based at Frederiksborg General Hospital in Denmark.[1] The MDI differs from many other self-report inventories, such as the Beck Depression Inventory (BDI), because it is able to generate an ICD-10 or DSM-IV diagnosis of depression in addition to an estimate of symptom severity.[2][3]</p>
 		<p>Unlike many other similar instruments, the MDI is available free of charge and can be downloaded from the internet with a full manual and scoring instructions. This makes it an attractive option in epidemiological population surveys. It has also been translated into seven languages.</p>
 		<p><a href="http://en.wikipedia.org/wiki/Major_Depression_Inventory" target="_blank">From Wikipedia.</p>
 
-
-    <footer>
-		<p id="logout"><a href="{{ url }}">{{ url_linktext }}</a></p>
-    </footer>
-  </div> <!--! end of #container -->
-
+</div>
+  </div> <!--! end of #rowfluid -->
+</div>
 
   <!-- JavaScript at the bottom for fast page loading -->
 

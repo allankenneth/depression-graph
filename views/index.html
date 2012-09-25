@@ -56,8 +56,11 @@
           <a class="brand" href="/">Depression Graph</a>
 
           <div class="nav-collapse collapse">
-          <a class="btn pull-right btn-primary" href="/take">Take Test</a>
+
             <ul class="nav">
+            <li>
+            	<a href="/take">Take Test</a>
+            </li>
               <li>
               	<a href="/list">List Inventories</a>
               </li>
@@ -73,10 +76,10 @@
         </div>
       </div>
     </div>
-  <div id="container">
+        <div class="container-fluid">
+      <div class="row-fluid">
 
-    <div id="main" role="main">
-		
+
 		{% if graph %}
 		<div class="grapher">
 		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
@@ -121,7 +124,8 @@
     	<hr>
 		<p>You have a reminder set for {{ reminder.0.date|date:"F jS" }}. <a href="/reminder?action=delete&key={{ reminder.0.key }}" class="btn btn-mini">cancel</a></p>
 		{% endif %}
-    </div>
+
+    </div> <!-- /.row-fluid -->
 <!--     http://en.wikipedia.org/wiki/Major_Depression_Inventory -->
 
     <footer>

@@ -76,10 +76,9 @@
         </div>
       </div>
     </div>
+        <div class="container-fluid">
+      <div class="row-fluid">
 
-  <div id="container">
-
-    <div id="main" role="main">
 	  <div class="track">
 		<a href="#low-spirits" title="1. Have you felt low in spirits or sad?">&bull;</a>
 		<a href="#lost-interest" title="2. Have you lost interest in your daily activities?">&bull;</a>
@@ -95,9 +94,10 @@
 		<a href="#increased-appetite" title="10. b)Have you suffered from increased appetite?">&bull;</a>
 	  </div>
 		<form id="inventory-form" action="/take" method="post">
-			<p class="pastweeks">In the past two weeks:</p>
+			
 
 			<div class="question" id="low-spirits">
+			<p class="pastweeks">In the past two weeks:</p>
 			<div class="questiontext">1. Have you felt low in spirits or sad?</div>
 			
 				<label><input type="radio" id="low-spirits1" name="low-spirits" value="5" value="5"> All the time </label>
@@ -264,8 +264,16 @@
   <!-- JavaScript at the bottom for fast page loading -->
 
   <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if necessary -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
-  <script>window.jQuery || document.write("<script src='js/libs/jquery-1.5.1.min.js'>\x3C/script>")</script>
+  <script src="//code.jquery.com/jquery-1.8.0.min.js"></script>
+  <script src="/js/bootstrap.js"></script>
+  <script>
+  	$(document).ready(function(){
+  		$('a').click(function() {	 
+  			window.location.href = $(this).attr('href'); 
+			return false; 
+		});
+  	});
+  </script>
 
   <script>
   $(document).ready(function(){

@@ -56,16 +56,15 @@
           <a class="brand" href="/">Depression Graph</a>
 
           <div class="nav-collapse collapse">
-            <a class="btn pull-right btn-primary" href="/take">Take Test</a>
+
             <ul class="nav">
-<!--
-              <li>
-              	<a href="/">Home</a>
-              </li>
--->
-              <li>
+            {% if user %}
+            <li>
+            	<a href="/take">Take Test</a>
+            </li>              <li>
               	<a href="/list">List Inventories</a>
               </li>
+              {% endif %}
               <li>
               	<a id="more" href="/info">Info</a>
               </li>
@@ -80,19 +79,20 @@
     </div>
 
 
-  <div id="container">
+        <div class="container-fluid">
+      <div class="row-fluid">
+      
 
-    <div id="main" role="main">
+    	<div class="span6">
 		<h1>Privacy Policy</h1>
     	<p>When you log an inventory, your test results are stored unencrypted on Google's servers, specifically in an "App Engine Datastore." The results are stored with an identifier that is unique to your Google account. This is done so that this program can work properly, and your data persist across devices and time. If you are uncomfortable storing your test results on Google's servers, please do not use this program. I am investigating a method to encrypt the data for an added level of security.</p>
     	
     	<p>I will never use your information for any purpose that directly identifies you. I may, at some point, and likely for academic purposes, anonymize the database and use it for statistical analysis for any number of ends, but there will never any tie to you personally.</p>
+		</div> <!-- /.span6 -->
 
 
-    <footer>
-		<p id="logout"><a href="{{ url }}">{{ url_linktext }}</a></p>
-    </footer>
-  </div> <!--! end of #container -->
+  </div> <!--! /.row-fluid -->
+  </div>
 
 
   <!-- JavaScript at the bottom for fast page loading -->
