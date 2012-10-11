@@ -56,11 +56,10 @@
           <div class="nav-collapse collapse">
 <!--             <a class="btn pull-right btn-primary" href="/take">Take Test</a> -->
             <ul class="nav">
-<!--
-              <li>
-              	<a href="/">Home</a>
-              </li>
--->
+
+            <li class="active">
+            	<a href="/take">Take Test</a>
+            </li>
               <li>
               	<a href="/list">List Inventories</a>
               </li>
@@ -78,7 +77,7 @@
     </div>
         <div class="container-fluid">
       <div class="row-fluid">
-
+		<div class="span7">
 	  <div class="track">
 		<a href="#low-spirits" title="1. Have you felt low in spirits or sad?">&bull;</a>
 		<a href="#lost-interest" title="2. Have you lost interest in your daily activities?">&bull;</a>
@@ -235,9 +234,9 @@
 			</div>
 			<div id="remind">
 				<p>The MDI is designed to be taken every two weeks for the duration of your treatment. Would you like to receive an email in two weeks reminding you to take an inventory again?</p>
-				<label>
+				<label class="remindin">
 					<input type="checkbox" id="reminder" name="reminder" checked> 
-					Remind me in two weeks time
+					<strong>Remind me in two weeks time</strong>
 				</label>
 <!--
 				<label>
@@ -254,11 +253,8 @@
 		</form>
 
 	</div>
-    
-    <footer>
-
-    </footer>
-  </div> <!--! end of #container -->
+	</div>
+      </div> <!--! end of /.fluid-row -->
 
 
   <!-- JavaScript at the bottom for fast page loading -->

@@ -136,7 +136,7 @@ class Inventory(webapp.RequestHandler):
                 user = users.get_current_user()
                 k = db.Key(self.request.get('iid'))
                 db.delete(k)
-                action = '/'
+                action = '/list'
                 self.redirect(action)
             else:
 
@@ -145,29 +145,10 @@ class Inventory(webapp.RequestHandler):
                 inventory_query = Inventories.all()
                 inventory_query.filter('__key__ =', k)
                 inventory = inventory_query.fetch(1)
-                # TODO the following should be broken out into its own method(s)
-                answers = []
-                for ans in inventory[0].answers:
-                  if ans == 0:
-                      answers.append("At no time (0).")
-                  if ans == 1:
-                      answers.append("Some of the time (1).")
-                  if ans == 2:
-                      answers.append("Slightly less than half the time (2).")
-                  if ans == 3:
-                      answers.append("Slightly more than half the time (3).")
-                  if ans == 4:
-                      answers.append("Most of the time (4).")
-                  if ans == 5:
-                      answers.append("All of the time (5).")
-                if inventory[0].dsmscore <= 19:
-                    diagnoses = "Not depressed."
-                if inventory[0].dsmscore > 19:
-                    diagnoses = "Mildly depressed."
-                if inventory[0].dsmscore > 24:
-                    diagnoses = "Moderately depressed."
-                if inventory[0].dsmscore > 29:
-                    diagnoses = "Severely depressed."
+                
+                answers = self.scoreit(inventory[0].answers)
+
+                diagnoses = self.diagnose(inventory[0].dsmscore)
                 
                 yeahdate = inventory[0].date.strftime("%a, %d %b %Y")
                 template_values = {
@@ -192,6 +173,39 @@ class Inventory(webapp.RequestHandler):
             action = '/'
             self.redirect(action)
             
+            
+    def scoreit(self,scores):
+
+        answers = []
+
+        for ans in scores:
+          if ans == 0:
+              answers.append("At no time (0).")
+          if ans == 1:
+              answers.append("Some of the time (1).")
+          if ans == 2:
+              answers.append("Slightly less than half the time (2).")
+          if ans == 3:
+              answers.append("Slightly more than half the time (3).")
+          if ans == 4:
+              answers.append("Most of the time (4).")
+          if ans == 5:
+              answers.append("All of the time (5).")
+        
+        return answers
+        
+    def diagnose(self,score):
+
+        if score <= 19:
+            diagnoses = "Not depressed."
+        if score > 19:
+            diagnoses = "Mildly depressed."
+        if score > 24:
+            diagnoses = "Moderately depressed."
+        if score > 29:
+            diagnoses = "Severely depressed."
+            
+        return diagnoses
        
 class TakeInventory(webapp.RequestHandler):
 
@@ -344,30 +358,11 @@ class InventoryEmail(webapp.RequestHandler):
         k = db.Key(self.request.get('iid'))
         inventory_query = Inventories.all()
         inventory_query.filter('__key__ =', k)
-        inventory = inventory_query.fetch(1)
-        # TODO the following should be broken out into its own method(s)
-        answers = []
-        for ans in inventory[0].answers:
-          if ans == 0:
-              answers.append("0 - At no time.")
-          if ans == 1:
-              answers.append("1 - Some of the time.")
-          if ans == 2:
-              answers.append("2 - Slightly less than half the time.")
-          if ans == 3:
-              answers.append("3 - Slightly more than half the time.")
-          if ans == 4:
-              answers.append("4 - Most of the time.")
-          if ans == 5:
-              answers.append("5 - All of the time.")
-        if inventory[0].dsmscore <= 19:
-          diagnoses = "Not depressed."
-        if inventory[0].dsmscore > 19:
-          diagnoses = "Mildly depressed."
-        if inventory[0].dsmscore > 24:
-          diagnoses = "Moderately depressed."
-        if inventory[0].dsmscore > 29:
-          diagnoses = "Severely depressed."
+        inv = inventory_query.fetch(1)
+
+        answers = Inventory().scoreit(inv[0].answers)
+        diagnoses = Inventory().diagnose(inv[0].dsmscore)
+
         user = users.get_current_user()
         if user:
             inventoryFrom = user.email()
@@ -420,7 +415,7 @@ Diagnoses
              answers[9],
              answers[10],
              answers[11],
-             inventory[0].dsmscore,
+             inv[0].dsmscore,
              diagnoses)
         
         message.send()

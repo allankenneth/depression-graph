@@ -16,15 +16,36 @@ a.current {
 	margin: 10px 0;
 }
 .question {
-	margin: 10px 0;
+	margin: 20px 0;
 }
 .questiontext { 
 	font-size: 18px;
 	margin: 10px 0;
 }
+.question label {
+	margin: 15px 0;
+}
+.question input[type="radio"], 
+.question input[type="checkbox"] {
+	margin: 0;
+}
 .diagnoses {
 	font-size: 22px;
 }
-.mailto {
-	width: 180px;
+.remindin { 
+	font-size: 18px;
+	margin: 20px 0;
+}
+iframe {
+	width: 50%;
+}
+@media (max-width: 480px) {
+
+	.mailto {
+		width: 120px;
+	}
+
+	iframe {
+		width: 100%;
+	}
 }
