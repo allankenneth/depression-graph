@@ -76,9 +76,9 @@
         <div class="container-fluid">
       <div class="row-fluid">
 
-
+		
 		{% if graph %}
-		<div class="grapher">
+		<div class="graph">
 		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 	    <script type="text/javascript">
 	      google.load('visualization', '1', { packages: ['corechart'] });
@@ -95,7 +95,7 @@
 	        {% endfor %}
 	        
 	        // Create and draw the visualization.
-	        new google.visualization.LineChart(document.getElementById('visualization')).
+	        new google.visualization.LineChart(document.getElementById('visualizer')).
 	            draw(data, {curveType: "function",
 	                        width: 290, height: 220,
 	                        chartArea: {left: 20, top: 15, width: '90%', height: '90%;'},
@@ -110,7 +110,7 @@
 	      google.setOnLoadCallback(drawVisualization);
 	    </script>
 			
-		<div id="visualization" style="width: 290px; height: 200px; overflow: hidden"></div>
+		<div id="visualizer" style="width: 290px; height: 200px; overflow: hidden"></div>
 
 		</div> <!-- /.grapher -->
 		

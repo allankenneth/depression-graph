@@ -36,6 +36,13 @@ a.current {
 	font-size: 18px;
 	margin: 20px 0;
 }
+.result {
+	text-align: center;
+}
+#grapher,
+#visualization {
+	margin: 0 auto;
+}
 iframe {
 	width: 50%;
 }

@@ -139,20 +139,17 @@ class Inventory(webapp.RequestHandler):
                 action = '/list'
                 self.redirect(action)
             else:
-
                 userreg = user.email()
                 k = db.Key(self.request.get('iid'))
                 inventory_query = Inventories.all()
                 inventory_query.filter('__key__ =', k)
                 inventory = inventory_query.fetch(1)
-                
                 answers = self.scoreit(inventory[0].answers)
-
                 diagnoses = self.diagnose(inventory[0].dsmscore)
-                
                 yeahdate = inventory[0].date.strftime("%a, %d %b %Y")
                 template_values = {
                     'reminderset': self.request.get('reminderset'),
+                    'emailsent': self.request.get('emailsent'),
                     'date': yeahdate,
                     'diagnoses': diagnoses,
                     'score': inventory[0].dsmscore,
@@ -180,17 +177,17 @@ class Inventory(webapp.RequestHandler):
 
         for ans in scores:
           if ans == 0:
-              answers.append("At no time (0).")
+              answers.append("0 - At no time.")
           if ans == 1:
-              answers.append("Some of the time (1).")
+              answers.append("1 - Some of the time.")
           if ans == 2:
-              answers.append("Slightly less than half the time (2).")
+              answers.append("2 - Slightly less than half the time.")
           if ans == 3:
-              answers.append("Slightly more than half the time (3).")
+              answers.append("3 - Slightly more than half the time.")
           if ans == 4:
-              answers.append("Most of the time (4).")
+              answers.append("4 - Most of the time.")
           if ans == 5:
-              answers.append("All of the time (5).")
+              answers.append("5 - All of the time.")
         
         return answers
         
@@ -293,6 +290,11 @@ class TakeInventory(webapp.RequestHandler):
         entrykey = str(entry.key())
         remind = 0
         if self.request.get('reminder'):
+        
+            # TODO check to see if there's already a reminder set,
+            # and delete it if it's there.
+            
+            
 
             now = datetime.datetime.now()
             twoweeks = timedelta(days=14)
@@ -362,6 +364,8 @@ class InventoryEmail(webapp.RequestHandler):
 
         answers = Inventory().scoreit(inv[0].answers)
         diagnoses = Inventory().diagnose(inv[0].dsmscore)
+        
+        testdate = inv[0].date.strftime("%b %d %Y")
 
         user = users.get_current_user()
         if user:
@@ -375,7 +379,9 @@ class InventoryEmail(webapp.RequestHandler):
         message = mail.EmailMessage(sender=inventoryFrom,
                                     subject=inventorySubject)
         message.to = self.request.get('emailto')
-        message.body = """Have you felt low in spirits or sad ?
+
+        message.body = """
+Have you felt low in spirits or sad ?
 %s
 Have you lost interest in your daily activities ?
 %s
@@ -417,9 +423,80 @@ Diagnoses
              answers[11],
              inv[0].dsmscore,
              diagnoses)
-        
+        message.html = """
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Depression Graph Inventory</title>
+</head>
+<body style="font-family: Arial">
+<h1>%s's Major Depression Inventory</h1>
+<p>Taken: %s</p>
+<table>
+<tr>
+<td width="360">
+<h2>Answers</h2>
+<p>Have you felt low in spirits or sad?<br>
+<strong>%s</strong></p>
+<p>Have you lost interest in your daily activities?<br>
+<strong>%s</strong></p>
+<p>Have you felt lacking in energy and strength?<br>
+<strong>%s</strong></p>
+<p>Have you felt less self-confident?<br>
+<strong>%s</strong></p>
+<p>Have you had a bad conscience or feelings of guilt?<br>
+<strong>%s</strong></p>
+<p>Have you felt that life wasn't worth living?<br>
+<strong>%s</strong></p>
+<p>Have you had difficulty in concentrating?<br>
+<strong>%s</strong></p>
+<p>Have you felt very restless?<br>
+<strong>%s</strong></p>
+<p>Have you felt subdued or slowed down?<br>
+<strong>%s</strong></p>
+<p>Have you had trouble sleeping at night?<br>
+<strong>%s</strong></p>
+<p>Have you suffered from reduced appetite?<br>
+<strong>%s</strong></p>
+<p>Have you suffered from increased appetite?<br>
+<strong>%s</strong></p>
+</td>
+<td valign="top" style="text-align: center">
+<p>
+	Score<br>
+	<strong style="font-size: 24px">%s</strong>
+</p>
+<p>
+	Diagnoses<br>
+	<strong style="font-size: 18px">%s</strong>
+</p>
+</td>
+</tr>
+</table>
+</body>
+</html>
+
+"""     %   (inventoryNickname,
+             testdate,
+             answers[0],
+             answers[1],
+             answers[2],
+             answers[3],
+             answers[4],
+             answers[5],
+             answers[6],
+             answers[7],
+             answers[8],
+             answers[9],
+             answers[10],
+             answers[11],
+             inv[0].dsmscore,
+             diagnoses)
+                     
         message.send()
-        action = '/inventory?iid=' + self.request.get('iid')
+        action = '/inventory?iid=' + self.request.get('iid') + '&emailsent=1'
         self.redirect(action)
 #         else:
 #             action = '/'
