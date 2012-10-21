@@ -39,6 +39,9 @@ a.current {
 .result {
 	text-align: center;
 }
+.mailto {
+	width: 140px;
+}
 #grapher,
 #visualization {
 	margin: 0 auto;

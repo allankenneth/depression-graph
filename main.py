@@ -177,17 +177,17 @@ class Inventory(webapp.RequestHandler):
 
         for ans in scores:
           if ans == 0:
-              answers.append("0 - At no time.")
+              answers.append('<span class="badge">0</span> - At no time.')
           if ans == 1:
-              answers.append("1 - Some of the time.")
+              answers.append('<span class="badge">1</span> - Some of the time.')
           if ans == 2:
-              answers.append("2 - Slightly less than half the time.")
+              answers.append('<span class="badge">2</span> - Slightly less than half the time.')
           if ans == 3:
-              answers.append("3 - Slightly more than half the time.")
+              answers.append('<span class="badge">3</span> - Slightly more than half the time.')
           if ans == 4:
-              answers.append("4 - Most of the time.")
+              answers.append('<span class="badge">4</span> - Most of the time.')
           if ans == 5:
-              answers.append("5 - All of the time.")
+              answers.append('<span class="badge">5</span> - All of the time.')
         
         return answers
         
@@ -229,6 +229,7 @@ class TakeInventory(webapp.RequestHandler):
     def post(self):
     
         user = users.get_current_user()
+        
         low = self.request.get_all('low-spirits')
         lost = self.request.get_all('lost-interest')
         lacking = self.request.get_all('lacking-energy')
@@ -288,24 +289,35 @@ class TakeInventory(webapp.RequestHandler):
         entry.dsmscore = totalscore
         entry.put()
         entrykey = str(entry.key())
-        remind = 0
+        remind = ''
         if self.request.get('reminder'):
-        
-            # TODO check to see if there's already a reminder set,
+
+            remind = 1
+
+            # Check to see if there's already a reminder set,
             # and delete it if it's there.
-            
-            
+            reminder_query = Reminders.all()
+            reminder_query.filter("user", user)
+            reminder = reminder_query.fetch(10)
+            if reminder:
+                # first remove from datastore
+                remdel = reminder[0].key()
+                db.delete(remdel)
+                # then remove from taskqueue
+                name = str(reminder[0].date)
+                name = md5.md5(name).hexdigest()
+                q = taskqueue.Queue('default')
+                q.delete_tasks(taskqueue.Task(name=name))
 
             now = datetime.datetime.now()
             twoweeks = timedelta(days=14)
             remindin = now + twoweeks
             
-            remind = 1
-            alarm = Reminders()
-            alarm.user = user
-            alarm.date = remindin
-            alarm.put()
-            remindkey = alarm.key()
+            addalarm = Reminders()
+            addalarm.user = user
+            addalarm.date = remindin
+            addalarm.put()
+            remindkey = addalarm.key()
             
             # 2 weeks = 1 209 600 seconds
             parameters = {'emailto': self.request.get('remindemail'), 'key': remindkey}
@@ -437,7 +449,6 @@ Diagnoses
 <table>
 <tr>
 <td width="360">
-<h2>Answers</h2>
 <p>Have you felt low in spirits or sad?<br>
 <strong>%s</strong></p>
 <p>Have you lost interest in your daily activities?<br>

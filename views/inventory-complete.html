@@ -72,10 +72,16 @@
         <div class="container-fluid">
       <div class="row-fluid">
       {% if emailsent %}
-      <div class="hero-unit">Email sent. <div class="cancel pull-right"><a href="/inventory?iid={{iid}}">x</a></div></div>
+		<div class="alert alert-success">
+			<button type="button" class="close" data-dismiss="alert">×</button>
+			Email sent.
+		</div>
       {% endif %}
       {% if reminderset %}
-      <div class="hero-unit">Reminder set. <div class="cancel pull-right"><a href="/inventory?iid={{iid}}">x</a></div></div>
+		<div class="alert alert-success">
+			<button type="button" class="close" data-dismiss="alert">×</button>
+			Reminder set.
+		</div>
       {% endif %}
 		<div class="span4 result">
 <!-- 		<h1>{{ date }}</h1> -->
@@ -127,6 +133,9 @@
 				<button class="btn btn-success">Send</button>
 
 		</form>
+		<div class="">
+			<a class="delete-inventory btn btn-mini btn-danger" href="/inventory?action=delete&iid={{ iid }}">delete</a>
+		</div>
 	</div>
 	<div class="span4">
 

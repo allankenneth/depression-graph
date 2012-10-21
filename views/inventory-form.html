@@ -92,6 +92,11 @@
 		<a href="#reduced-appetite" title="10. a)Have you suffered from reduced appetite?">&bull;</a>
 		<a href="#increased-appetite" title="10. b)Have you suffered from increased appetite?">&bull;</a>
 	  </div>
+<!--
+		<div class="progress progress-striped">
+			<div class="bar" style="width: 20%;"></div>
+		</div>
+-->
 		<form id="inventory-form" action="/take" method="post">
 			
 
@@ -286,7 +291,13 @@
   	$("#low-spirits").show().addClass("active");
   	// attach listener to hide current question and show the next
     $("#inventory-form div input[type=radio]").change(function(){
+    
     	$(this).parent().parent().removeClass("active").hide().next().addClass("active").show();
+    	
+//    	barwid = $('.bar')[0].style.width;
+//		foo = barwid + "10%"
+//   		newwid = $('.bar').css('width', foo);
+//    	alert(foo);
     	cur = $(this).parent().parent().attr("id");
 
     	$(".track a").each(function(){
