@@ -92,10 +92,6 @@ class ListInventories(webapp.RequestHandler):
             inventories_query.order("date")
             inventories = inventories_query.fetch(100)
             
-            reminder_query = Reminders.all()
-            reminder_query.filter("user", user)
-            reminder = reminder_query.fetch(10)
-            
             tabled = []
             for test in inventories:
                 #tabledate = test.date.strftime("%b %d %Y")
@@ -108,7 +104,6 @@ class ListInventories(webapp.RequestHandler):
                 'userreg': userreg,
                 'message': 'Your Library',
                 'table': tabled,
-                'reminder': reminder,
                 'url': url,
                 'url_linktext': url_linktext
             }
@@ -218,8 +213,16 @@ class TakeInventory(webapp.RequestHandler):
             
         else:
             useremail = ''
+
+        reminder_query = Reminders.all()
+        reminder_query.filter("user", user)
+        reminder = reminder_query.fetch(10)
+        reminddate = ''
+        if reminder:
+            reminddate = reminder[0].date.strftime("%a, %b. %d")
         
         template_values = {
+            'reminddate': reminddate,
             'message': 'Log an Inventory',
             'useremail': useremail
         }

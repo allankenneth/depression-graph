@@ -93,10 +93,7 @@
 		{% endfor %}
 <!-- 		</ul> -->
 		<hr>
-		    	{% if reminder %}
-		<p>You have a reminder set for {{ reminder.0.date|date:"F jS" }}. <a href="/reminder?action=delete&key={{ reminder.0.key }}" class="cancel-reminder btn btn-mini">cancel</a></p>
-		<hr>
-		{% endif %}
+
 
     </div>
 

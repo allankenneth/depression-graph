@@ -238,11 +238,21 @@
 			
 			</div>
 			<div id="remind">
-				<p>The MDI is designed to be taken every two weeks for the duration of your treatment. Would you like to receive an email in two weeks reminding you to take an inventory again?</p>
+				<p>The MDI is designed to be taken every two weeks for the duration of your treatment.</p>
+				{% if reminddate %}
+				<p><strong>You've already got a reminder set for {{ reminddate }}.</strong></p>
+				<label class="remindin">
+					<input type="checkbox" id="reminder" name="reminder"> 
+					<strong>Cancel my existing reminder and set a new one for two weeks from now.</strong>
+				</label>
+				{% else %}
+				<p>Would you like to receive an email in two weeks reminding you to take an inventory again?</p>
 				<label class="remindin">
 					<input type="checkbox" id="reminder" name="reminder" checked> 
 					<strong>Remind me in two weeks time</strong>
 				</label>
+				{% endif %}
+
 <!--
 				<label>
 					<input type="checkbox" id="sharepub" name="sharepub" checked> 
