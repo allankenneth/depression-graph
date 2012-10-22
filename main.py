@@ -247,7 +247,7 @@ class TakeInventory(webapp.RequestHandler):
         increased = self.request.get_all('increased-appetite')
         # for logging purposes, create a list with all answer values
         # in the order presented; this is what gets written to the datastore
-        # as a receipt of the inventory; we do the actual DSMIV score calculation
+        # as a receipt of the inventory; we do the actual DSM-IV score calculation
         # as below.
         allanswers = [int(low[0]),
                    int(lost[0]),
