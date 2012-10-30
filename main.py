@@ -1,5 +1,7 @@
+#
 # MAJOR DEPRESSION INVENTORY - DepressionGraph.com
 # Author: Allan Haggett
+#
 
 import os
 import md5
@@ -16,17 +18,18 @@ from time import gmtime, strftime
 from datetime import date
 from datetime import timedelta
 
+# 
 class Inventories(db.Model):
     user = db.UserProperty()
     date = db.DateTimeProperty(auto_now_add=True)
     answers = db.ListProperty(long)
-    dsmscore = db.IntegerProperty()
+    score = db.IntegerProperty()
 
 # This is to track whether a reminder has been set yet, or not.
 # When you initate a test, we select all reminders here filtered 
 # for your user; if there's already a reminder here, then we 
 # delete the reminder and remove it from the task queue.
-# When you take an inventory, it will add the reminder here and 
+# When you submit an inventory, it will add the reminder here and 
 # into the task queue with the new countdown
 class Reminders(db.Model):
     user = db.UserProperty()
@@ -53,7 +56,7 @@ class MainHandler(webapp.RequestHandler):
             graph = []
             for test in inventories:
                 graphdate = test.date.strftime("%b %d")
-                graph.append([graphdate,test.dsmscore,test.key()])
+                graph.append([graphdate,test.score,test.key()])
 
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
@@ -96,7 +99,7 @@ class ListInventories(webapp.RequestHandler):
             for test in inventories:
                 #tabledate = test.date.strftime("%b %d %Y")
                 tabledate = test.date
-                tabled.append([tabledate,test.dsmscore,test.key()])
+                tabled.append([tabledate,test.score,test.key()])
             tabled.reverse()
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
@@ -140,14 +143,14 @@ class Inventory(webapp.RequestHandler):
                 inventory_query.filter('__key__ =', k)
                 inventory = inventory_query.fetch(1)
                 answers = self.scoreit(inventory[0].answers)
-                diagnoses = self.diagnose(inventory[0].dsmscore)
+                diagnoses = self.diagnose(inventory[0].score)
                 yeahdate = inventory[0].date.strftime("%a, %d %b %Y")
                 template_values = {
                     'reminderset': self.request.get('reminderset'),
                     'emailsent': self.request.get('emailsent'),
                     'date': yeahdate,
                     'diagnoses': diagnoses,
-                    'score': inventory[0].dsmscore,
+                    'score': inventory[0].score,
                     'answer': answers,
                     'iid': self.request.get('iid')
                 }
@@ -236,19 +239,28 @@ class TakeInventory(webapp.RequestHandler):
         low = self.request.get_all('low-spirits')
         lost = self.request.get_all('lost-interest')
         lacking = self.request.get_all('lacking-energy')
+        
         less = self.request.get_all('less-self-confident')
         bad = self.request.get_all('bad-conscience')
+        
         worth = self.request.get_all('not-worth-living')
         difficult = self.request.get_all('difficulty-concentrating')
+        
         restless = self.request.get_all('very-restless')
         subdued = self.request.get_all('subdued-or-slowed')
+        
         sleeping = self.request.get_all('trouble-sleeping')
+        
         reduced = self.request.get_all('reduced-appetite')
         increased = self.request.get_all('increased-appetite')
-        # for logging purposes, create a list with all answer values
+        #
+        # For logging purposes, create a list with all answer values
         # in the order presented; this is what gets written to the datastore
-        # as a receipt of the inventory; we do the actual DSM-IV score calculation
+        # as a receipt of the inventory; we do the actual score calculation
         # as below.
+        # TODO Instead of manually int'ing these values, do it properly!
+        # results = map(int, results)
+        #
         allanswers = [int(low[0]),
                    int(lost[0]),
                    int(lacking[0]),
@@ -261,7 +273,15 @@ class TakeInventory(webapp.RequestHandler):
                    int(sleeping[0]),
                    int(reduced[0]),
                    int(increased[0])]
-        # create the initial list minus answers 8a/b & 10a/b
+        #
+        # Create the initial list minus answers 8a/b & 10a/b.
+        # TODO Same as above with the int'ing.
+        #
+        # TODO accommodate and display DSM diagnoses to user.
+        # For a DSM IV diagnoses, we need to take the highest score of 4 & 5,
+        # so here we'd have to exclude those answers below, or maybe we should
+        # create a new list for DSM ..?
+        #
         answers = [int(low[0]),
                    int(lost[0]),
                    int(lacking[0]),
@@ -270,12 +290,22 @@ class TakeInventory(webapp.RequestHandler):
                    int(worth[0]),
                    int(difficult[0]),
                    int(sleeping[0])]
-        # we compare 8a with 8b and note the highest value as a variable
+
+        
+        #
+        #if int(less[0]) > int(bad[0]):
+        #  five = int(less[0])
+        #else:
+        #  five = int(bad[0])
+        #
+        # TODO create a comparison function and use it
+        #
+        # Compare 8a with 8b and note the highest value as a variable.
         if int(restless[0]) > int(subdued[0]):
           eight = int(restless[0])
         else:
           eight = int(subdued[0])
-        # we do the same as above for 10a & 10b
+        # Do the same as above for 10a & 10b
         if reduced[0] > increased[0]:
           ten = int(reduced[0])
         else:
@@ -284,12 +314,15 @@ class TakeInventory(webapp.RequestHandler):
         score = 0
         for ans in answers:
           score = score + ans
-        # finally we add in the highest scores from 8 & 10
-        totalscore = score + eight + ten
+        #
+        # Finally we add in the highest scores from 8 & 10.
+        # For DSM, we'd need to accommodate the hightest of 4 & 5.
+        #
+        totalscore = score +  eight + ten
         entry = Inventories()
         entry.user = user
         entry.answers = allanswers
-        entry.dsmscore = totalscore
+        entry.score = totalscore
         entry.put()
         entrykey = str(entry.key())
         remind = ''
@@ -378,7 +411,7 @@ class InventoryEmail(webapp.RequestHandler):
         inv = inventory_query.fetch(1)
 
         answers = Inventory().scoreit(inv[0].answers)
-        diagnoses = Inventory().diagnose(inv[0].dsmscore)
+        diagnoses = Inventory().diagnose(inv[0].score)
         
         testdate = inv[0].date.strftime("%b %d %Y")
 
@@ -436,7 +469,7 @@ Diagnoses
              answers[9],
              answers[10],
              answers[11],
-             inv[0].dsmscore,
+             inv[0].score,
              diagnoses)
         message.html = """
 
@@ -506,7 +539,7 @@ Diagnoses
              answers[9],
              answers[10],
              answers[11],
-             inv[0].dsmscore,
+             inv[0].score,
              diagnoses)
                      
         message.send()
