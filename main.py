@@ -1,6 +1,6 @@
 #
-# MAJOR DEPRESSION INVENTORY - DepressionGraph.com
-# Author: Allan Haggett
+# DepressionGraph.com
+# Author: Allan Kenneth <hello@allankenneth.com>
 #
 
 import os
@@ -23,6 +23,7 @@ class Inventories(db.Model):
     user = db.UserProperty()
     date = db.DateTimeProperty(auto_now_add=True)
     answers = db.ListProperty(long)
+    dsmscore = db.IntegerProperty()
     score = db.IntegerProperty()
 
 # This is to track whether a reminder has been set yet, or not.
@@ -583,9 +584,28 @@ class Privacy(webapp.RequestHandler):
 #        self.response.out.write(template.render(path, {}))
 
 
+class UpdateScores(webapp.RequestHandler):
+
+
+    def get(self):
+
+        inventories_query = Inventories.all()
+        inventories = inventories_query.fetch(1000)
+        
+        for inv in inventories:
+            k = db.get(inv.key())
+            k.dsmscore = inv.score
+            k.put()
+            g = '(score:' + str(inv.score) + ' - dsmscore: ' + str(inv.dsmscore) + ')\n'
+            self.response.out.write(g)
+        
+        self.response.out.write("Done")
+
+
 application = webapp.WSGIApplication([('/', MainHandler),
                                       ('/list', ListInventories),
                                       ('/inventory', Inventory),
+                                      ('/updatescores', UpdateScores),
                                       ('/privacy', Privacy),
                                       ('/take', TakeInventory),
                                       ('/info', MoreInfo),
