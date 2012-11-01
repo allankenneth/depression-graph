@@ -366,6 +366,38 @@ class TakeInventory(webapp.RequestHandler):
         
         action = '/inventory?iid=' + entrykey + '&reminderset=' + str(remind)
         self.redirect(action)
+
+    def ScoreInventory(self,answers):
+
+        # TODO create a comparison function and use it
+        #
+        # Compare 8a with 8b and note the highest value as a variable.
+        if int(answers[7]) > int(answers[8]):
+          eight = answers[7]
+        else:
+          eight = answers[8]
+        # Do the same as above for 10a & 10b
+        if answers[10] > answers[11]:
+          ten = answers[10]
+        else:
+          ten = answers[11]
+        
+        answers.pop(7)
+        answers.pop(7)
+        answers.pop(8)
+        answers.pop(8)
+        #now we loop through and add up all scores
+        score = 0
+        for ans in answers:
+          score = score + ans
+        #
+        # Finally we add in the highest scores from 8 & 10.
+        # For DSM, we'd need to accommodate the hightest of 4 & 5.
+        #
+        totalscore = score + eight + ten
+
+        return totalscore
+
         
 
 class RemindersHandler(webapp.RequestHandler):
@@ -594,18 +626,42 @@ class UpdateScores(webapp.RequestHandler):
         
         for inv in inventories:
             k = db.get(inv.key())
-            k.dsmscore = inv.score
+            k.score = inv.dsmscore
             k.put()
             g = '(score:' + str(inv.score) + ' - dsmscore: ' + str(inv.dsmscore) + ')\n'
             self.response.out.write(g)
         
         self.response.out.write("Done")
 
+class ReScore(webapp.RequestHandler):
+
+
+    def get(self):
+
+        inventories_query = Inventories.all()
+        inventories = inventories_query.fetch(1000)
+        
+        for inv in inventories:
+            
+            ti = TakeInventory()
+            newscore = ti.ScoreInventory(inv.answers)
+            k = db.get(inv.key())
+            k.score = newscore
+            k.dsmscore = newscore
+            k.put()
+            g = 'score: ' + str(newscore) + '<br>'
+            self.response.out.write(g)
+        
+        self.response.out.write("Done.")
+
+
+
 
 application = webapp.WSGIApplication([('/', MainHandler),
                                       ('/list', ListInventories),
                                       ('/inventory', Inventory),
                                       ('/updatescores', UpdateScores),
+                                      ('/rescore', ReScore),
                                       ('/privacy', Privacy),
                                       ('/take', TakeInventory),
                                       ('/info', MoreInfo),
