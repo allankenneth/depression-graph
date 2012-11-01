@@ -34,14 +34,15 @@ class Inventories(db.Model):
 # into the task queue with the new countdown
 class Reminders(db.Model):
     user = db.UserProperty()
-    date = db.DateTimeProperty()
-    
-
+    date = db.DateTimeProperty()Ï
 
 class MainHandler(webapp.RequestHandler):
 
 
     def get(self):
+        """
+
+        """
         user = users.get_current_user()
         if user:
             userreg = user.nickname()
@@ -86,8 +87,10 @@ class MainHandler(webapp.RequestHandler):
 
 class ListInventories(webapp.RequestHandler):
     
-    
     def get(self):
+        """
+
+        """
         user = users.get_current_user()
         if user:
             userreg = user.nickname()
@@ -127,8 +130,10 @@ class ListInventories(webapp.RequestHandler):
 
 class Inventory(webapp.RequestHandler):
 
-
     def get(self):
+        """
+
+        """
         user = users.get_current_user()
         if user:
             if(self.request.get('action') == "delete"):
@@ -162,6 +167,9 @@ class Inventory(webapp.RequestHandler):
             self.redirect(action)
             
     def post(self):
+        """
+
+        """
         user = users.get_current_user()
         if user:
             self.response.out.write("We don't have a post action for this yet.")
@@ -171,6 +179,9 @@ class Inventory(webapp.RequestHandler):
             
             
     def scoreit(self,scores):
+        """
+
+        """
 
         answers = []
 
@@ -191,6 +202,9 @@ class Inventory(webapp.RequestHandler):
         return answers
         
     def diagnose(self,score):
+        """
+
+        """
 
         if score <= 19:
             diagnoses = "Not depressed."
@@ -205,8 +219,10 @@ class Inventory(webapp.RequestHandler):
        
 class TakeInventory(webapp.RequestHandler):
 
-
     def get(self):
+        """
+
+        """
     
         # TODO Check to see if there is an appointment scheduled; 
         # If there is, cancel it.

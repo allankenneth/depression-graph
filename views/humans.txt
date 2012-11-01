@@ -4,7 +4,7 @@
 
 /* TEAM */
   <your title>: Allan Haggett
-  Site: http://allanhaggett.com
+  Site: http://allankenneth.com
   Twitter: allankh
   Location: Victoria, B.C.
 
