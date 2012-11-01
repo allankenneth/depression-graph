@@ -234,96 +234,104 @@ class TakeInventory(webapp.RequestHandler):
         self.response.out.write(template.render(path, template_values))
 
     def post(self):
-    
+        """
+        The inventory test form gets posted here.
+        """
         user = users.get_current_user()
-        
-        low = self.request.get_all('low-spirits')
-        lost = self.request.get_all('lost-interest')
-        lacking = self.request.get_all('lacking-energy')
-        
-        less = self.request.get_all('less-self-confident')
-        bad = self.request.get_all('bad-conscience')
-        
-        worth = self.request.get_all('not-worth-living')
-        difficult = self.request.get_all('difficulty-concentrating')
-        
-        restless = self.request.get_all('very-restless')
-        subdued = self.request.get_all('subdued-or-slowed')
-        
-        sleeping = self.request.get_all('trouble-sleeping')
-        
-        reduced = self.request.get_all('reduced-appetite')
-        increased = self.request.get_all('increased-appetite')
-        #
-        # Create a list with all answer values in the order presented; 
-        # this is what gets written to the datastore as a receipt of the 
-        # inventory; we do the actual score calculation as below.
-        #
-        # TODO Instead of manually int'ing these values, do it properly!
-        # results = map(int, results)
-        #
-        answers = [int(low[0]),
-                   int(lost[0]),
-                   int(lacking[0]),
-                   int(less[0]),
-                   int(bad[0]),
-                   int(worth[0]),
-                   int(difficult[0]),
-                   int(restless[0]),
-                   int(subdued[0]),
-                   int(sleeping[0]),
-                   int(reduced[0]),
-                   int(increased[0])]
-        totalscore = self.ScoreInventory(answers)
-        entry = Inventories()
-        entry.user = user
-        entry.answers = answers
-        entry.score = totalscore
-        entry.put()
-        entrykey = str(entry.key())
-        remind = ''
-        if self.request.get('reminder'):
+        if user:    
+            low = self.request.get_all('low-spirits')
+            lost = self.request.get_all('lost-interest')
+            lacking = self.request.get_all('lacking-energy')
+            
+            less = self.request.get_all('less-self-confident')
+            bad = self.request.get_all('bad-conscience')
+            
+            worth = self.request.get_all('not-worth-living')
+            difficult = self.request.get_all('difficulty-concentrating')
+            
+            restless = self.request.get_all('very-restless')
+            subdued = self.request.get_all('subdued-or-slowed')
+            
+            sleeping = self.request.get_all('trouble-sleeping')
+            
+            reduced = self.request.get_all('reduced-appetite')
+            increased = self.request.get_all('increased-appetite')
+            #
+            # Create a list with all answer values in the order presented; 
+            # this is what gets written to the datastore as a receipt of the 
+            # inventory; we do the actual score calculation below in the 
+            # ScoreInventory method
+            #
+            # TODO Instead of manually int'ing these values, do it properly?
+            # i.e. results = map(int, results)
+            #
+            answers = [int(low[0]),
+                       int(lost[0]),
+                       int(lacking[0]),
+                       int(less[0]),
+                       int(bad[0]),
+                       int(worth[0]),
+                       int(difficult[0]),
+                       int(restless[0]),
+                       int(subdued[0]),
+                       int(sleeping[0]),
+                       int(reduced[0]),
+                       int(increased[0])]
+            totalscore = self.ScoreInventory(answers)
+            entry = Inventories()
+            entry.user = user
+            entry.answers = answers
+            entry.score = totalscore
+            entry.put()
+            entrykey = str(entry.key())
+            remind = ''
+            if self.request.get('reminder'):
 
-            remind = 1
+                remind = 1
 
-            # Check to see if there's already a reminder set,
-            # and delete it if it's there.
-            reminder_query = Reminders.all()
-            reminder_query.filter("user", user)
-            reminder = reminder_query.fetch(10)
-            if reminder:
-                # first remove from datastore
-                remdel = reminder[0].key()
-                db.delete(remdel)
-                # then remove from taskqueue
-                name = str(reminder[0].date)
+                # Check to see if there's already a reminder set,
+                # and delete it if it's there.
+                # TODO Don't delete it! Just update it with the new date!
+                # DUH.
+                reminder_query = Reminders.all()
+                reminder_query.filter("user", user)
+                reminder = reminder_query.fetch(10)
+                if reminder:
+                    # first remove from datastore
+                    remdel = reminder[0].key()
+                    db.delete(remdel)
+                    # then remove from taskqueue
+                    name = str(reminder[0].date)
+                    name = md5.md5(name).hexdigest()
+                    q = taskqueue.Queue('default')
+                    q.delete_tasks(taskqueue.Task(name=name))
+
+                now = datetime.datetime.now()
+                twoweeks = timedelta(days=14)
+                remindin = now + twoweeks
+                
+                addalarm = Reminders()
+                addalarm.user = user
+                addalarm.date = remindin
+                addalarm.put()
+                remindkey = addalarm.key()
+                
+                # 2 weeks = 1 209 600 seconds
+                parameters = {'emailto': self.request.get('remindemail'), 'key': remindkey}
+
+                name = str(remindin)
                 name = md5.md5(name).hexdigest()
-                q = taskqueue.Queue('default')
-                q.delete_tasks(taskqueue.Task(name=name))
-
-            now = datetime.datetime.now()
-            twoweeks = timedelta(days=14)
-            remindin = now + twoweeks
+                taskqueue.add(name=name, url='/reminder', countdown=1209600, params=parameters)
             
-            addalarm = Reminders()
-            addalarm.user = user
-            addalarm.date = remindin
-            addalarm.put()
-            remindkey = addalarm.key()
-            
-            # 2 weeks = 1 209 600 seconds
-            parameters = {'emailto': self.request.get('remindemail'), 'key': remindkey}
-
-            name = str(remindin)
-            name = md5.md5(name).hexdigest()
-            taskqueue.add(name=name, url='/reminder', countdown=1209600, params=parameters)
-        
-        action = '/inventory?iid=' + entrykey + '&reminderset=' + str(remind)
-        self.redirect(action)
+            action = '/inventory?iid=' + entrykey + '&reminderset=' + str(remind)
+            self.redirect(action)
 
     def ScoreInventory(self,answers):
+        """
+
+        """
         # Compare 8a with 8b and note the highest value as a variable.
-        if int(answers[7]) > int(answers[8]):
+        if answers[7] > answers[8]:
           eight = answers[7]
         else:
           eight = answers[8]
@@ -338,14 +346,12 @@ class TakeInventory(webapp.RequestHandler):
         shortlist.pop(7)
         shortlist.pop(8)
         shortlist.pop(8)
-        # Now we loop through and add up all scores
+        # Now we loop through and add up scores minus 8ab/10ab
         score = 0
         for ans in shortlist:
           score = score + ans
-        #
         # Finally we add in the highest scores from 8 & 10.
         # For DSM, we'd need to accommodate the hightest of 4 & 5.
-        #
         totalscore = score + eight + ten
 
         return totalscore
