@@ -8,8 +8,28 @@ body {
 .track {
 	font-size: 30px;
 }
-a.current {
-	color: red;
+.track a {
+	background: blue;
+	border-radius: 50%;
+	box-shadow: inset 1px 1px 1px #000;
+	color: #FFF;
+	display: inline-block;
+	font-size: 9px;
+	height: 15px;
+	line-height: 15px;
+	text-align: center;
+	width: 15px;
+
+}
+.track a:hover {
+	text-decoration: none;
+}
+.track a.answered {
+	background: red;
+	box-shadow: inset 1px 1px 3px #000;
+}
+.track a.active {
+	font-weight: bold;
 }
 .pastweeks {
 	font-size: 24px;
@@ -27,6 +47,7 @@ a.current {
 }
 .question input[type="radio"], 
 .question input[type="checkbox"] {
+	/*display: none;*/
 	margin: 0;
 }
 .diagnoses {

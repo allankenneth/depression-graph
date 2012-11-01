@@ -383,7 +383,7 @@ class RemindersHandler(webapp.RequestHandler):
         message = mail.EmailMessage(sender=inventoryFrom,
                                     subject=inventorySubject)                     
         message.to = self.request.get('emailto')
-        message.body = """Take an inventory: http://depressiongraph.appspot.com"""
+        message.body = """Take an inventory: https://depressiongraph.appspot.com"""
         message.send()
         
         k = db.Key(self.request.get('key'))
@@ -544,9 +544,6 @@ Diagnoses
         message.send()
         action = '/inventory?iid=' + self.request.get('iid') + '&emailsent=1'
         self.redirect(action)
-#         else:
-#             action = '/'
-#             self.redirect(action) 
 
 
 class UpdateScores(webapp.RequestHandler):
@@ -557,6 +554,8 @@ class UpdateScores(webapp.RequestHandler):
         We updated the datastore to move from 'dsmscore' to
         simply 'score' so we needed to copy over the dsmscores from 
         older tests so that they're still usable.
+        This is a pretty dangerous method and should be made 
+        idempotent or something.
         """
         if users.is_current_user_admin():
             inventories_query = Inventories.all()
@@ -578,6 +577,7 @@ class ReScore(webapp.RequestHandler):
         Occasionally we'll fuck up and accidentally delete all the tallied scores 
         in the datastore (using above UpdateScores), and we'll need to re-score
         them based on the recorded answers.
+        This could/should be updated to support DSM scoring in the future.
         """
         if users.is_current_user_admin():
             inventories_query = Inventories.all()

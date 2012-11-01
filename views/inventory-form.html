@@ -79,18 +79,18 @@
       <div class="row-fluid">
 		<div class="span7">
 	  <div class="track">
-		<a href="#low-spirits" title="1. Have you felt low in spirits or sad?">&bull;</a>
-		<a href="#lost-interest" title="2. Have you lost interest in your daily activities?">&bull;</a>
-		<a href="#lacking-energy" title="3. Have you felt lacking in energy and strength?">&bull;</a>
-		<a href="#less-self-confident" title="4. Have you felt less self-confident?">&bull;</a>
-		<a href="#bad-conscience" title="5. Have you had a bad conscience or feelings of guilt?">&bull;</a>
-		<a href="#not-worth-living" title="6. Have you felt that life wasn’t worth living?">&bull;</a>
-		<a href="#difficulty-concentrating" title="7. Have you had difficulty in concentrating?">&bull;</a>
-		<a href="#restless" title="8. a) Have you felt very restless?">&bull;</a>
-		<a href="#subdued" title="8. b)Have you felt subdued or slowed down?">&bull;</a>
-		<a href="#trouble-sleeping" title="9. Have you had trouble sleeping at night?">&bull;</a>
-		<a href="#reduced-appetite" title="10. a)Have you suffered from reduced appetite?">&bull;</a>
-		<a href="#increased-appetite" title="10. b)Have you suffered from increased appetite?">&bull;</a>
+		<a href="#low-spirits" title="1. Have you felt low in spirits or sad?">1</a>
+		<a href="#lost-interest" title="2. Have you lost interest in your daily activities?">2</a>
+		<a href="#lacking-energy" title="3. Have you felt lacking in energy and strength?">3</a>
+		<a href="#less-self-confident" title="4. Have you felt less self-confident?">4</a>
+		<a href="#bad-conscience" title="5. Have you had a bad conscience or feelings of guilt?">5</a>
+		<a href="#not-worth-living" title="6. Have you felt that life wasn’t worth living?">6</a>
+		<a href="#difficulty-concentrating" title="7. Have you had difficulty in concentrating?">7</a>
+		<a href="#restless" title="8. a) Have you felt very restless?">8</a>
+		<a href="#subdued" title="8. b)Have you felt subdued or slowed down?">9</a>
+		<a href="#trouble-sleeping" title="9. Have you had trouble sleeping at night?">10</a>
+		<a href="#reduced-appetite" title="10. a)Have you suffered from reduced appetite?">11</a>
+		<a href="#increased-appetite" title="10. b)Have you suffered from increased appetite?">12</a>
 	  </div>
 	  <hr>
 <!--
@@ -267,10 +267,12 @@
 
 
 		</form>
+		<hr>
+	</div>
+	</div>
 
-	</div>
-	</div>
       </div> <!--! end of /.fluid-row -->
+  </div> <!-- .container -->
 
 
   <!-- JavaScript at the bottom for fast page loading -->
@@ -291,6 +293,8 @@
   $(document).ready(function(){
 	// remove the click handler from the tracker bullets
 	$(".track a").click(function(){
+		// $(".track a").removeClass("active");
+		// $(this).addClass("active");
 		$(".question").hide();
 		goto = $(this).attr("href");
 		$(goto).show();
@@ -299,12 +303,15 @@
 	// hide all the questions
   	$(".question, #remind").hide();
   	// then show the very first one
-  	$("#low-spirits").show().addClass("active");
+  	$("#low-spirits").show().addClass("answered");
   	// attach listener to hide current question and show the next
     $("#inventory-form div input[type=radio]").change(function(){
     
-    	$(this).parent().parent().removeClass("active").hide().next().addClass("active").show();
-    	
+    	// $(".track a").addClass("active");
+
+    	$(this).parent().parent().removeClass("answered").hide().next().addClass("answered").show();
+		
+		 	
 //    	barwid = $('.bar')[0].style.width;
 //		foo = barwid + "10%"
 //   		newwid = $('.bar').css('width', foo);
@@ -312,12 +319,13 @@
     	cur = $(this).parent().parent().attr("id");
 
     	$(".track a").each(function(){
+    		
     		menu = $(this).attr("href");
     		menu = menu.split("#");
     		
     		if(menu[1] == cur){
 
-    			$(this).addClass("current");
+    			$(this).addClass("answered");
     		}
     	});
     });

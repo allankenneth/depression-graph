@@ -64,6 +64,7 @@
               </li>
 				
             </ul>
+            <a class="pull-right delete-inventory btn btn-danger" href="/inventory?action=delete&iid={{ iid }}">delete</a>
           </div>
         </div>
       </div>
@@ -122,7 +123,7 @@
 	    
 	    <div id="visualization" style="width: 260px; height: 260px;"></div>
 	    </div> <!-- /.grapher -->
-		<form id="email-inventory" class="form-inline" method="post" action="/inventory-email">
+		<form id="email-inventory" class="form-inline well" method="post" action="/inventory-email">
 
 				<label>
 					Send to: 
@@ -133,9 +134,9 @@
 				<button class="btn btn-success">Send</button>
 
 		</form>
-		<div class="">
+		<!-- <div class="">
 			<a class="delete-inventory btn btn-mini btn-danger" href="/inventory?action=delete&iid={{ iid }}">delete</a>
-		</div>
+		</div> -->
 	</div>
 	<div class="span4">
 
