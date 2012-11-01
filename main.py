@@ -255,14 +255,14 @@ class TakeInventory(webapp.RequestHandler):
         reduced = self.request.get_all('reduced-appetite')
         increased = self.request.get_all('increased-appetite')
         #
-        # For logging purposes, create a list with all answer values
-        # in the order presented; this is what gets written to the datastore
-        # as a receipt of the inventory; we do the actual score calculation
-        # as below.
+        # Create a list with all answer values in the order presented; 
+        # this is what gets written to the datastore as a receipt of the 
+        # inventory; we do the actual score calculation as below.
+        #
         # TODO Instead of manually int'ing these values, do it properly!
         # results = map(int, results)
         #
-        allanswers = [int(low[0]),
+        answers = [int(low[0]),
                    int(lost[0]),
                    int(lacking[0]),
                    int(less[0]),
@@ -274,55 +274,10 @@ class TakeInventory(webapp.RequestHandler):
                    int(sleeping[0]),
                    int(reduced[0]),
                    int(increased[0])]
-        #
-        # Create the initial list minus answers 8a/b & 10a/b.
-        # TODO Same as above with the int'ing.
-        #
-        # TODO accommodate and display DSM diagnoses to user.
-        # For a DSM IV diagnoses, we need to take the highest score of 4 & 5,
-        # so here we'd have to exclude those answers below, or maybe we should
-        # create a new list for DSM ..?
-        #
-        answers = [int(low[0]),
-                   int(lost[0]),
-                   int(lacking[0]),
-                   int(less[0]),
-                   int(bad[0]),
-                   int(worth[0]),
-                   int(difficult[0]),
-                   int(sleeping[0])]
-
-        
-        #
-        #if int(less[0]) > int(bad[0]):
-        #  five = int(less[0])
-        #else:
-        #  five = int(bad[0])
-        #
-        # TODO create a comparison function and use it
-        #
-        # Compare 8a with 8b and note the highest value as a variable.
-        if int(restless[0]) > int(subdued[0]):
-          eight = int(restless[0])
-        else:
-          eight = int(subdued[0])
-        # Do the same as above for 10a & 10b
-        if reduced[0] > increased[0]:
-          ten = int(reduced[0])
-        else:
-          ten = int(increased[0])
-        #now we loop through and add up all scores
-        score = 0
-        for ans in answers:
-          score = score + ans
-        #
-        # Finally we add in the highest scores from 8 & 10.
-        # For DSM, we'd need to accommodate the hightest of 4 & 5.
-        #
-        totalscore = score +  eight + ten
+        totalscore = self.ScoreInventory(answers)
         entry = Inventories()
         entry.user = user
-        entry.answers = allanswers
+        entry.answers = answers
         entry.score = totalscore
         entry.put()
         entrykey = str(entry.key())
@@ -362,15 +317,11 @@ class TakeInventory(webapp.RequestHandler):
             name = str(remindin)
             name = md5.md5(name).hexdigest()
             taskqueue.add(name=name, url='/reminder', countdown=1209600, params=parameters)
-
         
         action = '/inventory?iid=' + entrykey + '&reminderset=' + str(remind)
         self.redirect(action)
 
     def ScoreInventory(self,answers):
-
-        # TODO create a comparison function and use it
-        #
         # Compare 8a with 8b and note the highest value as a variable.
         if int(answers[7]) > int(answers[8]):
           eight = answers[7]
@@ -381,14 +332,15 @@ class TakeInventory(webapp.RequestHandler):
           ten = answers[10]
         else:
           ten = answers[11]
-        
-        answers.pop(7)
-        answers.pop(7)
-        answers.pop(8)
-        answers.pop(8)
-        #now we loop through and add up all scores
+        # Now we need to remove answers 8a, 8b & 10a, 10b
+        shortlist = list(answers)
+        shortlist.pop(7)
+        shortlist.pop(7)
+        shortlist.pop(8)
+        shortlist.pop(8)
+        # Now we loop through and add up all scores
         score = 0
-        for ans in answers:
+        for ans in shortlist:
           score = score + ans
         #
         # Finally we add in the highest scores from 8 & 10.
@@ -437,6 +389,10 @@ class InventoryEmail(webapp.RequestHandler):
 
 
     def post(self):
+        """
+
+
+        """
 
         k = db.Key(self.request.get('iid'))
         inventory_query = Inventories.all()
@@ -461,6 +417,10 @@ class InventoryEmail(webapp.RequestHandler):
                                     subject=inventorySubject)
         message.to = self.request.get('emailto')
 
+        #
+        # TODO Update plain text version so it's better and shows everything 
+        # the HTML version does.
+        #
         message.body = """
 Have you felt low in spirits or sad ?
 %s
@@ -582,6 +542,52 @@ Diagnoses
 #             action = '/'
 #             self.redirect(action) 
 
+
+class UpdateScores(webapp.RequestHandler):
+
+
+    def get(self):
+        """
+        We updated the datastore to move from 'dsmscore' to
+        simply 'score' so we needed to copy over the dsmscores from 
+        older tests so that they're still usable.
+        """
+        if users.is_current_user_admin():
+            inventories_query = Inventories.all()
+            inventories = inventories_query.fetch(1000)
+            for inv in inventories:
+                k = db.get(inv.key())
+                k.score = inv.dsmscore
+                k.put()
+                g = '(score:' + str(inv.score) + ' - dsmscore: ' + str(inv.dsmscore) + ')\n'
+                self.response.out.write(g)
+            self.response.out.write("Done")
+
+
+class ReScore(webapp.RequestHandler):
+
+
+    def get(self):
+        """
+        Occasionally we'll fuck up and accidentally delete all the tallied scores 
+        in the datastore (using above UpdateScores), and we'll need to re-score
+        them based on the recorded answers.
+        """
+        if users.is_current_user_admin():
+            inventories_query = Inventories.all()
+            inventories = inventories_query.fetch(1000)
+            for inv in inventories:
+                ti = TakeInventory()
+                newscore = ti.ScoreInventory(inv.answers)
+                k = db.get(inv.key())
+                k.score = newscore
+                k.dsmscore = newscore
+                k.put()
+                g = 'score: ' + str(newscore) + '<br>'
+                self.response.out.write(g)
+            self.response.out.write("Done.")
+
+
 class MoreInfo(webapp.RequestHandler):
 
 
@@ -614,47 +620,6 @@ class Privacy(webapp.RequestHandler):
 
 #        path = os.path.join(os.path.dirname(__file__), 'views/privacy.html')
 #        self.response.out.write(template.render(path, {}))
-
-
-class UpdateScores(webapp.RequestHandler):
-
-
-    def get(self):
-
-        inventories_query = Inventories.all()
-        inventories = inventories_query.fetch(1000)
-        
-        for inv in inventories:
-            k = db.get(inv.key())
-            k.score = inv.dsmscore
-            k.put()
-            g = '(score:' + str(inv.score) + ' - dsmscore: ' + str(inv.dsmscore) + ')\n'
-            self.response.out.write(g)
-        
-        self.response.out.write("Done")
-
-class ReScore(webapp.RequestHandler):
-
-
-    def get(self):
-
-        inventories_query = Inventories.all()
-        inventories = inventories_query.fetch(1000)
-        
-        for inv in inventories:
-            
-            ti = TakeInventory()
-            newscore = ti.ScoreInventory(inv.answers)
-            k = db.get(inv.key())
-            k.score = newscore
-            k.dsmscore = newscore
-            k.put()
-            g = 'score: ' + str(newscore) + '<br>'
-            self.response.out.write(g)
-        
-        self.response.out.write("Done.")
-
-
 
 
 application = webapp.WSGIApplication([('/', MainHandler),
