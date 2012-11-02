@@ -18,7 +18,6 @@ from time import gmtime, strftime
 from datetime import date
 from datetime import timedelta
 
-# 
 class Inventories(db.Model):
     user = db.UserProperty()
     date = db.DateTimeProperty(auto_now_add=True)
@@ -37,7 +36,6 @@ class Reminders(db.Model):
     date = db.DateTimeProperty()Ï
 
 class MainHandler(webapp.RequestHandler):
-
 
     def get(self):
         """
@@ -182,9 +180,7 @@ class Inventory(webapp.RequestHandler):
         """
 
         """
-
         answers = []
-
         for ans in scores:
           if ans == 0:
               answers.append('<span class="badge">0</span> - At no time.')
@@ -362,7 +358,7 @@ class TakeInventory(webapp.RequestHandler):
         shortlist.pop(7)
         shortlist.pop(8)
         shortlist.pop(8)
-        # Now we loop through and add up scores minus 8ab/10ab
+        # Now we loop through the shortlist and add up scores minus 8ab/10ab
         score = 0
         for ans in shortlist:
           score = score + ans
@@ -377,6 +373,9 @@ class TakeInventory(webapp.RequestHandler):
 class RemindersHandler(webapp.RequestHandler):
 
     def get(self):
+        """
+
+        """
         user = users.get_current_user()
         if user:
             if(self.request.get('action') == "delete"):
@@ -394,6 +393,9 @@ class RemindersHandler(webapp.RequestHandler):
                 self.response.out.write("Whatwhat!?")
     
     def post(self): 
+        """
+
+        """
         inventoryFrom = "allan@hitchless.com"
         inventorySubject = "Take Your Major Depression Inventory"
         message = mail.EmailMessage(sender=inventoryFrom,
@@ -409,10 +411,8 @@ class RemindersHandler(webapp.RequestHandler):
 
 class InventoryEmail(webapp.RequestHandler):
 
-
     def post(self):
         """
-
 
         """
 
@@ -612,8 +612,10 @@ class ReScore(webapp.RequestHandler):
 
 class MoreInfo(webapp.RequestHandler):
 
-
     def get(self):
+        """
+
+        """
         user = users.get_current_user()
         if user:
             userreg = user.nickname()
@@ -627,8 +629,10 @@ class MoreInfo(webapp.RequestHandler):
 
 class Privacy(webapp.RequestHandler):
     
-    
     def get(self):
+        """
+
+        """
         user = users.get_current_user()
         if user:
             userreg = user.nickname()
