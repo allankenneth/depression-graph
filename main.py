@@ -403,10 +403,8 @@ class RemindersHandler(webapp.RequestHandler):
         message.to = self.request.get('emailto')
         message.body = """Take an inventory: https://depressiongraph.appspot.com"""
         message.send()
-        
         k = db.Key(self.request.get('key'))
-        db.delete(k)        
-        
+        db.delete(k)
         self.response.out.write("sent")
 
 class InventoryEmail(webapp.RequestHandler):
@@ -608,6 +606,8 @@ class ReScore(webapp.RequestHandler):
                 g = 'score: ' + str(newscore) + '<br>'
                 self.response.out.write(g)
             self.response.out.write("Done.")
+        else: 
+            self.response.out.write("Step off buddy.")
 
 
 class MoreInfo(webapp.RequestHandler):
