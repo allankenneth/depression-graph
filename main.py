@@ -18,6 +18,7 @@ from time import gmtime, strftime
 from datetime import date
 from datetime import timedelta
 
+# 
 class Inventories(db.Model):
     user = db.UserProperty()
     date = db.DateTimeProperty(auto_now_add=True)
@@ -33,14 +34,14 @@ class Inventories(db.Model):
 # into the task queue with the new countdown
 class Reminders(db.Model):
     user = db.UserProperty()
-    date = db.DateTimeProperty()Ï
+    date = db.DateTimeProperty()
+    
+
 
 class MainHandler(webapp.RequestHandler):
 
-    def get(self):
-        """
 
-        """
+    def get(self):
         user = users.get_current_user()
         if user:
             userreg = user.nickname()
@@ -85,10 +86,8 @@ class MainHandler(webapp.RequestHandler):
 
 class ListInventories(webapp.RequestHandler):
     
+    
     def get(self):
-        """
-
-        """
         user = users.get_current_user()
         if user:
             userreg = user.nickname()
@@ -128,10 +127,8 @@ class ListInventories(webapp.RequestHandler):
 
 class Inventory(webapp.RequestHandler):
 
-    def get(self):
-        """
 
-        """
+    def get(self):
         user = users.get_current_user()
         if user:
             if(self.request.get('action') == "delete"):
@@ -146,7 +143,7 @@ class Inventory(webapp.RequestHandler):
                 inventory_query = Inventories.all()
                 inventory_query.filter('__key__ =', k)
                 inventory = inventory_query.fetch(1)
-                answers = self.scoreit(inventory[0].answers)
+                answers = self.formatScore(inventory[0].answers)
                 diagnoses = self.diagnose(inventory[0].score)
                 yeahdate = inventory[0].date.strftime("%a, %d %b %Y")
                 template_values = {
@@ -165,9 +162,6 @@ class Inventory(webapp.RequestHandler):
             self.redirect(action)
             
     def post(self):
-        """
-
-        """
         user = users.get_current_user()
         if user:
             self.response.out.write("We don't have a post action for this yet.")
@@ -176,11 +170,10 @@ class Inventory(webapp.RequestHandler):
             self.redirect(action)
             
             
-    def scoreit(self,scores):
-        """
+    def formatScore(self,scores):
 
-        """
         answers = []
+
         for ans in scores:
           if ans == 0:
               answers.append('<span class="badge">0</span> - At no time.')
@@ -198,9 +191,6 @@ class Inventory(webapp.RequestHandler):
         return answers
         
     def diagnose(self,score):
-        """
-
-        """
 
         if score <= 19:
             diagnoses = "Not depressed."
@@ -212,13 +202,42 @@ class Inventory(webapp.RequestHandler):
             diagnoses = "Severely depressed."
             
         return diagnoses
+
+    def scoreInventory(self,answers):
+        """
+
+        """
+        # Compare 8a with 8b and note the highest value as a variable.
+        if answers[7] > answers[8]:
+          eight = answers[7]
+        else:
+          eight = answers[8]
+        # Do the same as above for 10a & 10b
+        if answers[10] > answers[11]:
+          ten = answers[10]
+        else:
+          ten = answers[11]
+        # Now we need to remove answers 8a, 8b & 10a, 10b
+        shortlist = list(answers)
+        shortlist.pop(7)
+        shortlist.pop(7)
+        shortlist.pop(8)
+        shortlist.pop(8)
+        # Now we loop through and add up scores minus 8ab/10ab
+        score = 0
+        for ans in shortlist:
+          score = score + ans
+        # Finally we add in the highest scores from 8 & 10.
+        # For DSM, we'd need to accommodate the hightest of 4 & 5.
+        totalscore = score + eight + ten
+
+        return totalscore
+
        
 class TakeInventory(webapp.RequestHandler):
 
-    def get(self):
-        """
 
-        """
+    def get(self):
     
         # TODO Check to see if there is an appointment scheduled; 
         # If there is, cancel it.
@@ -289,7 +308,8 @@ class TakeInventory(webapp.RequestHandler):
                        int(sleeping[0]),
                        int(reduced[0]),
                        int(increased[0])]
-            totalscore = self.ScoreInventory(answers)
+            total = Inventory()
+            totalscore = total.scoreInventory(answers)
             entry = Inventories()
             entry.user = user
             entry.answers = answers
@@ -338,44 +358,11 @@ class TakeInventory(webapp.RequestHandler):
             action = '/inventory?iid=' + entrykey + '&reminderset=' + str(remind)
             self.redirect(action)
 
-    def ScoreInventory(self,answers):
-        """
-
-        """
-        # Compare 8a with 8b and note the highest value as a variable.
-        if answers[7] > answers[8]:
-          eight = answers[7]
-        else:
-          eight = answers[8]
-        # Do the same as above for 10a & 10b
-        if answers[10] > answers[11]:
-          ten = answers[10]
-        else:
-          ten = answers[11]
-        # Now we need to remove answers 8a, 8b & 10a, 10b
-        shortlist = list(answers)
-        shortlist.pop(7)
-        shortlist.pop(7)
-        shortlist.pop(8)
-        shortlist.pop(8)
-        # Now we loop through the shortlist and add up scores minus 8ab/10ab
-        score = 0
-        for ans in shortlist:
-          score = score + ans
-        # Finally we add in the highest scores from 8 & 10.
-        # For DSM, we'd need to accommodate the hightest of 4 & 5.
-        totalscore = score + eight + ten
-
-        return totalscore
-
         
 
 class RemindersHandler(webapp.RequestHandler):
 
     def get(self):
-        """
-
-        """
         user = users.get_current_user()
         if user:
             if(self.request.get('action') == "delete"):
@@ -393,9 +380,6 @@ class RemindersHandler(webapp.RequestHandler):
                 self.response.out.write("Whatwhat!?")
     
     def post(self): 
-        """
-
-        """
         inventoryFrom = "allan@hitchless.com"
         inventorySubject = "Take Your Major Depression Inventory"
         message = mail.EmailMessage(sender=inventoryFrom,
@@ -403,14 +387,18 @@ class RemindersHandler(webapp.RequestHandler):
         message.to = self.request.get('emailto')
         message.body = """Take an inventory: https://depressiongraph.appspot.com"""
         message.send()
+        
         k = db.Key(self.request.get('key'))
-        db.delete(k)
+        db.delete(k)        
+        
         self.response.out.write("sent")
 
 class InventoryEmail(webapp.RequestHandler):
 
+
     def post(self):
         """
+
 
         """
 
@@ -419,7 +407,7 @@ class InventoryEmail(webapp.RequestHandler):
         inventory_query.filter('__key__ =', k)
         inv = inventory_query.fetch(1)
 
-        answers = Inventory().scoreit(inv[0].answers)
+        answers = Inventory().formatScore(inv[0].answers)
         diagnoses = Inventory().diagnose(inv[0].score)
         
         testdate = inv[0].date.strftime("%b %d %Y")
@@ -606,16 +594,12 @@ class ReScore(webapp.RequestHandler):
                 g = 'score: ' + str(newscore) + '<br>'
                 self.response.out.write(g)
             self.response.out.write("Done.")
-        else: 
-            self.response.out.write("Step off buddy.")
 
 
 class MoreInfo(webapp.RequestHandler):
 
-    def get(self):
-        """
 
-        """
+    def get(self):
         user = users.get_current_user()
         if user:
             userreg = user.nickname()
@@ -629,10 +613,8 @@ class MoreInfo(webapp.RequestHandler):
 
 class Privacy(webapp.RequestHandler):
     
+    
     def get(self):
-        """
-
-        """
         user = users.get_current_user()
         if user:
             userreg = user.nickname()
