@@ -56,7 +56,7 @@ class MainHandler(webapp.RequestHandler):
             
             graph = []
             for test in inventories:
-                graphdate = test.date.strftime("%b %d")
+                graphdate = int(test.date.strftime("%s")) * 1000
                 graph.append([graphdate,test.score,test.key()])
 
             url = users.create_logout_url(self.request.uri)

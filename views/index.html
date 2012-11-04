@@ -31,7 +31,10 @@
   <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
   <meta http-equiv="cleartype" content="on">
 	
-	<!-- more tags for your 'head' to consider https://gist.github.com/849231 -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <script src="/js/bootstrap.js"></script>
+  
+  <script src="/js/flot/jquery.flot.js"></script>
   
   <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/bootstrap-responsive.css">
@@ -78,43 +81,55 @@
 
 		
 		{% if graph %}
-		<div class="graph">
-		<script type="text/javascript" src="//www.google.com/jsapi"></script>
-	    <script type="text/javascript">
-	      google.load('visualization', '1', { packages: ['corechart'] });
-	    </script>
-	    <script type="text/javascript">
-	      function drawVisualization() {
-	        // Create and populate the data table.
-	        var data = new google.visualization.DataTable();
-	        data.addColumn('string', 'x');
-	        data.addColumn('number', 'Score');
-	        
-	        {% for point in graph %}
-	        data.addRow(["{{ point.0 }}", {{ point.1 }}]);
-	        {% endfor %}
-	        
-	        // Create and draw the visualization.
-	        new google.visualization.LineChart(document.getElementById('visualizer')).
-	            draw(data, {curveType: "function",
-	                        width: 290, height: 220,
-	                        chartArea: {left: 20, top: 15, width: '90%', height: '90%;'},
-	                        vAxis: {maxValue: '50'},
-	                        legend: {position: 'none'},
-	                        animation:{duration: 1000,easing: 'out'}
-	                        }
-	                );
-	      }
-	      
-	
-	      google.setOnLoadCallback(drawVisualization);
-	    </script>
-			
-		<div id="visualizer" style="width: 290px; height: 200px; overflow: hidden"></div>
 
-		</div> <!-- /.grapher -->
+		<div id="graph" style="width:600px;height:300px;"></div>
+
+		<script type="text/javascript">
+    $(function () {
+        var dgraph = [
+        {% for point in graph %}
+          [{{ point.0 }}, {{ point.1 }}],
+        {% endfor %}
+        ];
+        $.plot($("#graph"), 
+            [{ 
+              color: "#000",
+              data: dgraph, 
+              label: ""
+            }], 
+            { 
+            xaxis: { 
+              mode: "time"
+            },
+            series: { 
+              lines: { 
+                show: true 
+              },
+              points: { 
+                show: true, 
+                radius: 3 
+              } 
+            },
+            grid: { 
+              borderWidth: 0,
+              hoverable: true,
+              clickable: true
+            }
+          });
+          $("#graph").bind("plotclick", function (event, pos, item) {
+              if (item) {
+                  $("#clickdata").text("You clicked point " + item.dataIndex + " in " +  + ".");
+                  plot.highlight(item.series, item.datapoint);
+              }
+          });
+
+    });
+    </script>
+    
+    <div id="clickdata"></div>
 		
-		{% endif %}
+    {% endif %}
+    
 		<hr>
 		<a class="btn btn-primary btn-large" href="/take">Take a Test</a>
     	{% if reminder %}
@@ -133,11 +148,6 @@
   </div> <!--! end of #container -->
 
 
-  <!-- JavaScript at the bottom for fast page loading -->
-
-  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if necessary -->
-  <script src="//code.jquery.com/jquery-1.8.0.min.js"></script>
-  <script src="/js/bootstrap.js"></script>
   
   
   <!-- Debugger - remove for production -->
