@@ -80,3 +80,15 @@ iframe {
 		width: 100%;
 	}
 }
+
+.tickLabel {
+	-webkit-transform: rotate(-45deg);
+}
+#clickdata {
+	margin-top: 10px;
+	text-align: center;
+}
+#graph {
+	height: 300px;
+	width: 100%;
+}
