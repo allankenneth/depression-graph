@@ -35,7 +35,8 @@
   <script src="/js/bootstrap.js"></script>
   
   <script src="/js/flot/jquery.flot.js"></script>
-  
+  <script src="/js/flot/jquery.flot.resize.js"></script>
+
   <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/bootstrap-responsive.css">
   <link rel="stylesheet" href="css/depression-graph.css">
@@ -82,24 +83,29 @@
 		
 		{% if graph %}
 
-		<div id="graph" style="width:600px;height:300px;"></div>
-
 		<script type="text/javascript">
     $(function () {
+
+          
         var dgraph = [
         {% for point in graph %}
           [{{ point.0 }}, {{ point.1 }}],
         {% endfor %}
         ];
-        $.plot($("#graph"), 
+        var plot = $.plot($("#graph"), 
             [{ 
               color: "#000",
               data: dgraph, 
               label: ""
             }], 
-            { 
+            {
             xaxis: { 
               mode: "time"
+            },
+            yaxis: {
+                ticks: 10,
+                min: 0,
+                max: 50
             },
             series: { 
               lines: { 
@@ -108,7 +114,7 @@
               points: { 
                 show: true, 
                 radius: 3 
-              } 
+              }
             },
             grid: { 
               borderWidth: 0,
@@ -118,16 +124,25 @@
           });
           $("#graph").bind("plotclick", function (event, pos, item) {
               if (item) {
-                  $("#clickdata").text("You clicked point " + item.dataIndex + " in " +  + ".");
-                  plot.highlight(item.series, item.datapoint);
+                plot.unhighlight();
+                p = item.dataIndex + 1;
+                score = item.datapoint[1];
+                q = item.datapoint[0];
+                var myDate = new Date(q);
+                $("#clickdata").html("Score: " + score + ".<br>Date: "  + myDate.toLocaleDateString() + ".");
+                $("#linker").html("<a href=/inventory?iid=" + item.datapoint[0] + ">Link</a>");
+                plot.highlight(item.series, item.datapoint);
               }
           });
 
     });
     </script>
-    
-    <div id="clickdata"></div>
-		
+    <div class="span7">
+      <div id="graph"></div>
+      <div id="clickdata"></div>
+      <div id="linker"></div>
+    </div>
+    <div style="clear:both"></div>
     {% endif %}
     
 		<hr>
