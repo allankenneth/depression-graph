@@ -84,19 +84,7 @@
 		<script type="text/javascript">
     $(function () {
 
-          
-        var dgraph = [
-        {% for point in graph %}
-          [{{ point.0 }}, {{ point.1 }}],
-        {% endfor %}
-        ];
-        var plot = $.plot($("#graph"), 
-            [{ 
-              color: "#000",
-              data: dgraph, 
-              label: ""
-            }], 
-            {
+      var options = {
             xaxis: { 
               mode: "time",
               timezone: "browser",
@@ -123,7 +111,50 @@
               borderWidth: 0,
               hoverable: true,
               clickable: true
-            }
+            }};
+          
+        var dgraph = [
+        {% for point in graph %}
+          [{{ point.0 }}, {{ point.1 }}],
+        {% endfor %}
+        ];
+        var plot = $.plot($("#graph"), 
+            [{ 
+              color: "#000",
+              data: dgraph, 
+              label: ""
+            }], options);
+
+          $("#slide").on('change', function(){
+                var lim = this.value;
+                var limlabel = this.value;
+                if(lim == 21) {
+                  lim = 1;
+                }
+                if(lim == 1) {
+                  limlabel = "All"
+                }
+                $('.rangeval .badge').html(limlabel);
+
+                apiuri = '/api?limit=' + lim;
+                function onDataReceived(series) {
+
+                    $.plot($('#graph'), 
+                      [{ 
+                        color: "#000",
+                        data: series, 
+                        label: ""
+                      }], 
+                      options
+                    );
+                 }
+                $.ajax({
+                    url: apiuri,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: onDataReceived
+                });
+
           });
           $("#graph").bind("plotclick, plothover", function (event, pos, item) {
               if (item) {
@@ -150,7 +181,17 @@
     <div class="span7">
 
       <div id="graph"></div>
-      <div id="show">Show <a href="/" class="badge">8</a> <a href="/?limit=1" class="badge">All</a> tests.</div>
+      
+      <!-- <div id="show">Show <a href="/" class="badge">8</a> <a href="/?limit=1" class="badge">All</a> tests.</div> -->
+      <!-- <div class="btn-group limiter" data-toggle="buttons-radio">
+        <button type="button" class="btn" data-lim="1">All</button>
+        <button type="button" class="btn" data-lim="8">8</button>
+        <button type="button" class="btn" data-lim="4">4</button>
+      </div> -->
+      <div class="well">
+        <input class="pull-left" id="slide" type="range" min="1" max="21" step="1" value="8">
+        <div class="rangeval pull-left"><span class="badge">8</span></div>
+      </div>
       <div id="clickdata"></div>
       <hr>
       <div class="take">
@@ -161,7 +202,7 @@
       <hr>
 
         {% if reminder %}
-        <hr>
+        
       <p>You have a reminder set for {{ reminder.0.date|date:"F jS" }}. <a href="/reminder?action=delete&key={{ reminder.0.key }}" class="btn btn-mini">cancel</a></p>
       {% endif %}
     </div>

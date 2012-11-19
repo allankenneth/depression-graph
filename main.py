@@ -93,7 +93,8 @@ class MainHandler(webapp.RequestHandler):
 
 class JsonInventories(webapp.RequestHandler):
     """
-    Provide a basic API for getting test results.
+    Provide a basic API for getting test results. Returns a JSON object
+    with the date as a javascript timestamp and the test DSM score.
 
     """
     def get(self):
@@ -115,7 +116,7 @@ class JsonInventories(webapp.RequestHandler):
             graph = list()
             for test in inventories:
                 graphdate = int(test.date.strftime("%s")) * 1000
-                graph.append([graphdate,test.score,str(test.key())])
+                graph.append([graphdate,test.score,test.answers,str(test.key())])
 
             from django.utils import simplejson
             self.response.headers['Content-Type'] = 'application/json'

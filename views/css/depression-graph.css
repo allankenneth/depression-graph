@@ -79,6 +79,13 @@ iframe {
 	iframe {
 		width: 100%;
 	}
+	#slide {
+		float: left;
+		width: 260px !important;
+	}
+	.rangeval {
+		float: left;
+	}
 }
 .arrow-down { 
 	border-left: 10px solid transparent;
@@ -109,4 +116,12 @@ iframe {
 	margin: 20px 0;
 	text-align: center;;
 	
+}
+#slide {
+	margin: 10px auto;
+	width: 90%;
+}
+.rangeval {
+	font-weight: bold;
+	padding: 5px 0 0 20px;
 }
