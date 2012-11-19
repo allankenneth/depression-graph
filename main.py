@@ -17,7 +17,7 @@ import datetime
 from time import gmtime, strftime
 from datetime import date
 from datetime import timedelta
-
+from django.utils import simplejson
 # 
 class Inventories(db.Model):
     user = db.UserProperty()
@@ -47,8 +47,15 @@ class MainHandler(webapp.RequestHandler):
             userreg = user.nickname()
             inventories_query = Inventories.all()
             inventories_query.filter("user", user)
-            inventories_query.order("date")
-            inventories = inventories_query.fetch(100)
+            inventories_query.order("-date")
+            try:
+                lim = int(self.request.get('limit'))
+            except:
+                lim = 8
+            if lim == 1:
+                lim = 1000
+
+            inventories = inventories_query.fetch(lim)
             
             reminder_query = Reminders.all()
             reminder_query.filter("user", user)
@@ -71,6 +78,48 @@ class MainHandler(webapp.RequestHandler):
             }
             path = os.path.join(os.path.dirname(__file__), 'views/index.html')
             self.response.out.write(template.render(path, template_values))
+
+        else:
+            url = users.create_login_url(self.request.uri)
+            url_linktext = 'Login'
+            template_values = {
+                'url': url,
+                'url_linktext': url_linktext,
+                'message': 'Welcome'
+            }
+            path = os.path.join(os.path.dirname(__file__), 'views/login.html')
+            self.response.out.write(template.render(path, template_values))
+
+
+class JsonInventories(webapp.RequestHandler):
+    """
+    Provide a basic API for getting test results.
+
+    """
+    def get(self):
+        user = users.get_current_user()
+        if user:
+            userreg = user.nickname()
+            inventories_query = Inventories.all()
+            inventories_query.filter("user", user)
+            inventories_query.order("-date")
+            try:
+                lim = int(self.request.get('limit'))
+            except:
+                lim = 8
+            if lim == 1:
+                lim = 1000
+
+            inventories = inventories_query.fetch(lim)
+            
+            graph = list()
+            for test in inventories:
+                graphdate = int(test.date.strftime("%s")) * 1000
+                graph.append([graphdate,test.score,str(test.key())])
+
+            from django.utils import simplejson
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.out.write(simplejson.dumps(graph))
 
         else:
             url = users.create_login_url(self.request.uri)
@@ -349,11 +398,17 @@ class TakeInventory(webapp.RequestHandler):
                 remindkey = addalarm.key()
                 
                 # 2 weeks = 1 209 600 seconds
-                parameters = {'emailto': self.request.get('remindemail'), 'key': remindkey}
+                parameters = {
+                    'emailto': self.request.get('remindemail'), 
+                    'key': remindkey
+                }
 
                 name = str(remindin)
                 name = md5.md5(name).hexdigest()
-                taskqueue.add(name=name, url='/reminder', countdown=1209600, params=parameters)
+                taskqueue.add(name=name, 
+                                url='/reminder', 
+                                countdown=1209600, 
+                                params=parameters)
             
             action = '/inventory?iid=' + entrykey + '&reminderset=' + str(remind)
             self.redirect(action)
@@ -631,6 +686,7 @@ class Privacy(webapp.RequestHandler):
 
 
 application = webapp.WSGIApplication([('/', MainHandler),
+                                      ('/api', JsonInventories),
                                       ('/list', ListInventories),
                                       ('/inventory', Inventory),
                                       ('/updatescores', UpdateScores),

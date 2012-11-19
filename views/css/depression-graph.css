@@ -80,15 +80,33 @@ iframe {
 		width: 100%;
 	}
 }
-
+.arrow-down { 
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-top: 10px solid #F1F1F1;
+	height: 0; 
+	margin: 0 auto 10px auto;
+	width: 0;
+}
 .tickLabel {
-	-webkit-transform: rotate(-45deg);
+	/*-webkit-transform: rotate(-45deg);*/
 }
 #clickdata {
-	margin-top: 10px;
+	color: #999;
 	text-align: center;
+}
+#clickdata .badge {
+	font-size: 18px;
+}
+#clickdata hr {
+	margin: 20px 0 -1px 0;
 }
 #graph {
 	height: 300px;
 	width: 100%;
+}
+.take {
+	margin: 20px 0;
+	text-align: center;;
+	
 }

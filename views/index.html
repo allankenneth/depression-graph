@@ -80,8 +80,6 @@
         <div class="container-fluid">
       <div class="row-fluid">
 
-		
-		{% if graph %}
 
 		<script type="text/javascript">
     $(function () {
@@ -100,7 +98,10 @@
             }], 
             {
             xaxis: { 
-              mode: "time"
+              mode: "time",
+              timezone: "browser",
+              tickSize: [14, "day"],
+              minTickSize: [14, "day"]
             },
             yaxis: {
                 ticks: 10,
@@ -109,7 +110,9 @@
             },
             series: { 
               lines: { 
-                show: true 
+                show: true,
+                fill: true, 
+                fillColor: "rgba(255, 255, 255, 0.0)"
               },
               points: { 
                 show: true, 
@@ -122,15 +125,22 @@
               clickable: true
             }
           });
-          $("#graph").bind("plotclick", function (event, pos, item) {
+          $("#graph").bind("plotclick, plothover", function (event, pos, item) {
               if (item) {
                 plot.unhighlight();
                 p = item.dataIndex + 1;
                 score = item.datapoint[1];
                 q = item.datapoint[0];
                 var myDate = new Date(q);
-                $("#clickdata").html("Score: " + score + ".<br>Date: "  + myDate.toLocaleDateString() + ".");
-                $("#linker").html("<a href=/inventory?iid=" + item.datapoint[0] + ">Link</a>");
+                level = "badge-success";
+                if (score > 20) {
+                  level = "badge-warning";
+                }
+                if (score > 30) {
+                  level = "badge-important";
+                }
+                $("#clickdata").html("<hr><div class=arrow-down></div><p>Score: <span class='badge " + level + "'>" + score + "</span><br>"  + myDate.toLocaleDateString() + ".</p>");
+                //$("#linker").html("<a href=/inventory?iid=" + item.datapoint[0] + ">Link</a>");
                 plot.highlight(item.series, item.datapoint);
               }
           });
@@ -138,19 +148,23 @@
     });
     </script>
     <div class="span7">
+
       <div id="graph"></div>
+      <div id="show">Show <a href="/" class="badge">8</a> <a href="/?limit=1" class="badge">All</a> tests.</div>
       <div id="clickdata"></div>
-      <div id="linker"></div>
+      <hr>
+      <div class="take">
+        <a class="btn btn-primary btn-large" href="/take">Take a Test</a>
+      </div>
+
+
+      <hr>
+
+        {% if reminder %}
+        <hr>
+      <p>You have a reminder set for {{ reminder.0.date|date:"F jS" }}. <a href="/reminder?action=delete&key={{ reminder.0.key }}" class="btn btn-mini">cancel</a></p>
+      {% endif %}
     </div>
-    <div style="clear:both"></div>
-    {% endif %}
-    
-		<hr>
-		<a class="btn btn-primary btn-large" href="/take">Take a Test</a>
-    	{% if reminder %}
-    	<hr>
-		<p>You have a reminder set for {{ reminder.0.date|date:"F jS" }}. <a href="/reminder?action=delete&key={{ reminder.0.key }}" class="btn btn-mini">cancel</a></p>
-		{% endif %}
 
     </div> <!-- /.row-fluid -->
 <!--     http://en.wikipedia.org/wiki/Major_Depression_Inventory -->
