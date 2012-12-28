@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 #
 # DepressionGraph.com
 # Author: Allan Kenneth <hello@allankenneth.com>
@@ -18,36 +20,41 @@ from time import gmtime, strftime
 from datetime import date
 from datetime import timedelta
 from django.utils import simplejson
-# 
+
+
+#
+
 class Inventories(db.Model):
+
     user = db.UserProperty()
     date = db.DateTimeProperty(auto_now_add=True)
     answers = db.ListProperty(long)
     dsmscore = db.IntegerProperty()
     score = db.IntegerProperty()
 
+
 # This is to track whether a reminder has been set yet, or not.
-# When you initate a test, we select all reminders here filtered 
-# for your user; if there's already a reminder here, then we 
+# When you initate a test, we select all reminders here filtered
+# for your user; if there's already a reminder here, then we
 # delete the reminder and remove it from the task queue.
-# When you submit an inventory, it will add the reminder here and 
+# When you submit an inventory, it will add the reminder here and
 # into the task queue with the new countdown
+
 class Reminders(db.Model):
+
     user = db.UserProperty()
     date = db.DateTimeProperty()
-    
 
 
 class MainHandler(webapp.RequestHandler):
-
 
     def get(self):
         user = users.get_current_user()
         if user:
             userreg = user.nickname()
             inventories_query = Inventories.all()
-            inventories_query.filter("user", user)
-            inventories_query.order("-date")
+            inventories_query.filter('user', user)
+            inventories_query.order('-date')
             try:
                 lim = int(self.request.get('limit'))
             except:
@@ -56,15 +63,15 @@ class MainHandler(webapp.RequestHandler):
                 lim = 1000
 
             inventories = inventories_query.fetch(lim)
-            
+
             reminder_query = Reminders.all()
-            reminder_query.filter("user", user)
+            reminder_query.filter('user', user)
             reminder = reminder_query.fetch(10)
-            
+
             graph = []
             for test in inventories:
-                graphdate = int(test.date.strftime("%s")) * 1000
-                graph.append([graphdate,test.score,test.key()])
+                graphdate = int(test.date.strftime('%s')) * 1000
+                graph.append([graphdate, test.score, test.key()])
 
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
@@ -74,36 +81,40 @@ class MainHandler(webapp.RequestHandler):
                 'graph': graph,
                 'reminder': reminder,
                 'url': url,
-                'url_linktext': url_linktext
-            }
-            path = os.path.join(os.path.dirname(__file__), 'views/index.html')
-            self.response.out.write(template.render(path, template_values))
-
+                'url_linktext': url_linktext,
+                }
+            path = os.path.join(os.path.dirname(__file__),
+                                'views/index.html')
+            self.response.out.write(template.render(path,
+                                    template_values))
         else:
+
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
-            template_values = {
-                'url': url,
-                'url_linktext': url_linktext,
-                'message': 'Welcome'
-            }
-            path = os.path.join(os.path.dirname(__file__), 'views/login.html')
-            self.response.out.write(template.render(path, template_values))
+            template_values = {'url': url,
+                               'url_linktext': url_linktext,
+                               'message': 'Welcome'}
+            path = os.path.join(os.path.dirname(__file__),
+                                'views/login.html')
+            self.response.out.write(template.render(path,
+                                    template_values))
 
 
 class JsonInventories(webapp.RequestHandler):
+
     """
     Provide a basic API for getting test results. Returns a JSON object
     with the date as a javascript timestamp and the test DSM score.
 
     """
+
     def get(self):
         user = users.get_current_user()
         if user:
             userreg = user.nickname()
             inventories_query = Inventories.all()
-            inventories_query.filter("user", user)
-            inventories_query.order("-date")
+            inventories_query.filter('user', user)
+            inventories_query.order('-date')
             try:
                 lim = int(self.request.get('limit'))
             except:
@@ -112,45 +123,47 @@ class JsonInventories(webapp.RequestHandler):
                 lim = 1000
 
             inventories = inventories_query.fetch(lim)
-            
+
             graph = list()
             for test in inventories:
-                graphdate = int(test.date.strftime("%s")) * 1000
-                graph.append([graphdate,test.score,test.answers,str(test.key())])
+                graphdate = int(test.date.strftime('%s')) * 1000
+                graph.append([graphdate, test.score, test.answers,
+                             str(test.key())])
 
             from django.utils import simplejson
             self.response.headers['Content-Type'] = 'application/json'
             self.response.out.write(simplejson.dumps(graph))
-
         else:
+
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
-            template_values = {
-                'url': url,
-                'url_linktext': url_linktext,
-                'message': 'Welcome'
-            }
-            path = os.path.join(os.path.dirname(__file__), 'views/login.html')
-            self.response.out.write(template.render(path, template_values))
+            template_values = {'url': url,
+                               'url_linktext': url_linktext,
+                               'message': 'Welcome'}
+            path = os.path.join(os.path.dirname(__file__),
+                                'views/login.html')
+            self.response.out.write(template.render(path,
+                                    template_values))
 
 
 class ListInventories(webapp.RequestHandler):
-    
-    
+
     def get(self):
         user = users.get_current_user()
         if user:
             userreg = user.nickname()
             inventories_query = Inventories.all()
-            inventories_query.filter("user", user)
-            inventories_query.order("date")
+            inventories_query.filter('user', user)
+            inventories_query.order('date')
             inventories = inventories_query.fetch(100)
-            
+
             tabled = []
             for test in inventories:
-                #tabledate = test.date.strftime("%b %d %Y")
+
+                # tabledate = test.date.strftime("%b %d %Y")
+
                 tabledate = test.date
-                tabled.append([tabledate,test.score,test.key()])
+                tabled.append([tabledate, test.score, test.key()])
             tabled.reverse()
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
@@ -159,29 +172,30 @@ class ListInventories(webapp.RequestHandler):
                 'message': 'Your Library',
                 'table': tabled,
                 'url': url,
-                'url_linktext': url_linktext
-            }
-            path = os.path.join(os.path.dirname(__file__), 'views/list.html')
-            self.response.out.write(template.render(path, template_values))
+                'url_linktext': url_linktext,
+                }
+            path = os.path.join(os.path.dirname(__file__),
+                                'views/list.html')
+            self.response.out.write(template.render(path,
+                                    template_values))
         else:
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
-            template_values = {
-                'url': url,
-                'url_linktext': url_linktext,
-                'message': 'Welcome'
-            }
-            path = os.path.join(os.path.dirname(__file__), 'views/login.html')
-            self.response.out.write(template.render(path, template_values))
+            template_values = {'url': url,
+                               'url_linktext': url_linktext,
+                               'message': 'Welcome'}
+            path = os.path.join(os.path.dirname(__file__),
+                                'views/login.html')
+            self.response.out.write(template.render(path,
+                                    template_values))
 
 
 class Inventory(webapp.RequestHandler):
 
-
     def get(self):
         user = users.get_current_user()
         if user:
-            if(self.request.get('action') == "delete"):
+            if self.request.get('action') == 'delete':
                 user = users.get_current_user()
                 k = db.Key(self.request.get('iid'))
                 db.delete(k)
@@ -195,7 +209,7 @@ class Inventory(webapp.RequestHandler):
                 inventory = inventory_query.fetch(1)
                 answers = self.formatScore(inventory[0].answers)
                 diagnoses = self.diagnose(inventory[0].score)
-                yeahdate = inventory[0].date.strftime("%a, %d %b %Y")
+                yeahdate = inventory[0].date.strftime('%a, %d %b %Y')
                 template_values = {
                     'reminderset': self.request.get('reminderset'),
                     'emailsent': self.request.get('emailsent'),
@@ -203,161 +217,182 @@ class Inventory(webapp.RequestHandler):
                     'diagnoses': diagnoses,
                     'score': inventory[0].score,
                     'answer': answers,
-                    'iid': self.request.get('iid')
-                }
-                path = os.path.join(os.path.dirname(__file__), 'views/inventory-complete.html')
-                self.response.out.write(template.render(path, template_values))
+                    'iid': self.request.get('iid'),
+                    }
+                path = os.path.join(os.path.dirname(__file__),
+                                    'views/inventory-complete.html')
+                self.response.out.write(template.render(path,
+                        template_values))
         else:
             action = '/'
             self.redirect(action)
-            
+
     def post(self):
         user = users.get_current_user()
         if user:
-            self.response.out.write("We don't have a post action for this yet.")
+            self.response.out.write("We don't have a post action for this yet."
+                                    )
         else:
             action = '/'
             self.redirect(action)
-            
-            
-    def formatScore(self,scores):
+
+    def formatScore(self, scores):
 
         answers = []
 
         for ans in scores:
-          if ans == 0:
-              answers.append('<span class="badge">0</span> - At no time.')
-          if ans == 1:
-              answers.append('<span class="badge">1</span> - Some of the time.')
-          if ans == 2:
-              answers.append('<span class="badge">2</span> - Slightly less than half the time.')
-          if ans == 3:
-              answers.append('<span class="badge">3</span> - Slightly more than half the time.')
-          if ans == 4:
-              answers.append('<span class="badge">4</span> - Most of the time.')
-          if ans == 5:
-              answers.append('<span class="badge">5</span> - All of the time.')
-        
+            if ans == 0:
+                answers.append('<span class="badge">0</span> - At no time.'
+                               )
+            if ans == 1:
+                answers.append('<span class="badge">1</span> - Some of the time.'
+                               )
+            if ans == 2:
+                answers.append('<span class="badge">2</span> - Slightly less than half the time.'
+                               )
+            if ans == 3:
+                answers.append('<span class="badge">3</span> - Slightly more than half the time.'
+                               )
+            if ans == 4:
+                answers.append('<span class="badge">4</span> - Most of the time.'
+                               )
+            if ans == 5:
+                answers.append('<span class="badge">5</span> - All of the time.'
+                               )
+
         return answers
-        
-    def diagnose(self,score):
+
+    def diagnose(self, score):
 
         if score <= 19:
-            diagnoses = "Not depressed."
+            diagnoses = 'Not depressed.'
         if score > 19:
-            diagnoses = "Mildly depressed."
+            diagnoses = 'Mildly depressed.'
         if score > 24:
-            diagnoses = "Moderately depressed."
+            diagnoses = 'Moderately depressed.'
         if score > 29:
-            diagnoses = "Severely depressed."
-            
+            diagnoses = 'Severely depressed.'
+
         return diagnoses
 
-    def scoreInventory(self,answers):
+    def scoreInventory(self, answers):
         """
 
         """
+
         # Compare 8a with 8b and note the highest value as a variable.
+
         if answers[7] > answers[8]:
-          eight = answers[7]
+            eight = answers[7]
         else:
-          eight = answers[8]
+            eight = answers[8]
+
         # Do the same as above for 10a & 10b
+
         if answers[10] > answers[11]:
-          ten = answers[10]
+            ten = answers[10]
         else:
-          ten = answers[11]
+            ten = answers[11]
+
         # Now we need to remove answers 8a, 8b & 10a, 10b
+
         shortlist = list(answers)
         shortlist.pop(7)
         shortlist.pop(7)
         shortlist.pop(8)
         shortlist.pop(8)
+
         # Now we loop through and add up scores minus 8ab/10ab
+
         score = 0
         for ans in shortlist:
-          score = score + ans
+            score = score + ans
+
         # Finally we add in the highest scores from 8 & 10.
         # For DSM, we'd need to accommodate the hightest of 4 & 5.
+
         totalscore = score + eight + ten
 
         return totalscore
 
-       
+
 class TakeInventory(webapp.RequestHandler):
 
-
     def get(self):
-    
-        # TODO Check to see if there is an appointment scheduled; 
+
+        # TODO Check to see if there is an appointment scheduled;
         # If there is, cancel it.
-        
+
         user = users.get_current_user()
         if user:
             useremail = user.email()
-            
         else:
+
             useremail = ''
 
         reminder_query = Reminders.all()
-        reminder_query.filter("user", user)
+        reminder_query.filter('user', user)
         reminder = reminder_query.fetch(10)
         reminddate = ''
         if reminder:
-            reminddate = reminder[0].date.strftime("%a, %b. %d")
-        
-        template_values = {
-            'reminddate': reminddate,
-            'message': 'Log an Inventory',
-            'useremail': useremail
-        }
-        path = os.path.join(os.path.dirname(__file__), 'views/inventory-form.html')
+            reminddate = reminder[0].date.strftime('%a, %b. %d')
+
+        template_values = {'reminddate': reminddate,
+                           'message': 'Log an Inventory',
+                           'useremail': useremail}
+        path = os.path.join(os.path.dirname(__file__),
+                            'views/inventory-form.html')
         self.response.out.write(template.render(path, template_values))
 
     def post(self):
         """
         The inventory test form gets posted here.
         """
+
         user = users.get_current_user()
-        if user:    
+        if user:
             low = self.request.get_all('low-spirits')
             lost = self.request.get_all('lost-interest')
             lacking = self.request.get_all('lacking-energy')
-            
+
             less = self.request.get_all('less-self-confident')
             bad = self.request.get_all('bad-conscience')
-            
+
             worth = self.request.get_all('not-worth-living')
             difficult = self.request.get_all('difficulty-concentrating')
-            
+
             restless = self.request.get_all('very-restless')
             subdued = self.request.get_all('subdued-or-slowed')
-            
+
             sleeping = self.request.get_all('trouble-sleeping')
-            
+
             reduced = self.request.get_all('reduced-appetite')
             increased = self.request.get_all('increased-appetite')
+
             #
-            # Create a list with all answer values in the order presented; 
-            # this is what gets written to the datastore as a receipt of the 
-            # inventory; we do the actual score calculation below in the 
+            # Create a list with all answer values in the order presented;
+            # this is what gets written to the datastore as a receipt of the
+            # inventory; we do the actual score calculation below in the
             # ScoreInventory method
             #
             # TODO Instead of manually int'ing these values, do it properly?
             # i.e. results = map(int, results)
             #
-            answers = [int(low[0]),
-                       int(lost[0]),
-                       int(lacking[0]),
-                       int(less[0]),
-                       int(bad[0]),
-                       int(worth[0]),
-                       int(difficult[0]),
-                       int(restless[0]),
-                       int(subdued[0]),
-                       int(sleeping[0]),
-                       int(reduced[0]),
-                       int(increased[0])]
+
+            answers = [
+                int(low[0]),
+                int(lost[0]),
+                int(lacking[0]),
+                int(less[0]),
+                int(bad[0]),
+                int(worth[0]),
+                int(difficult[0]),
+                int(restless[0]),
+                int(subdued[0]),
+                int(sleeping[0]),
+                int(reduced[0]),
+                int(increased[0]),
+                ]
             total = Inventory()
             totalscore = total.scoreInventory(answers)
             entry = Inventories()
@@ -375,14 +410,19 @@ class TakeInventory(webapp.RequestHandler):
                 # and delete it if it's there.
                 # TODO Don't delete it! Just update it with the new date!
                 # DUH.
+
                 reminder_query = Reminders.all()
-                reminder_query.filter("user", user)
+                reminder_query.filter('user', user)
                 reminder = reminder_query.fetch(10)
                 if reminder:
+
                     # first remove from datastore
+
                     remdel = reminder[0].key()
                     db.delete(remdel)
+
                     # then remove from taskqueue
+
                     name = str(reminder[0].date)
                     name = md5.md5(name).hexdigest()
                     q = taskqueue.Queue('default')
@@ -391,37 +431,34 @@ class TakeInventory(webapp.RequestHandler):
                 now = datetime.datetime.now()
                 twoweeks = timedelta(days=14)
                 remindin = now + twoweeks
-                
+
                 addalarm = Reminders()
                 addalarm.user = user
                 addalarm.date = remindin
                 addalarm.put()
                 remindkey = addalarm.key()
-                
+
                 # 2 weeks = 1 209 600 seconds
-                parameters = {
-                    'emailto': self.request.get('remindemail'), 
-                    'key': remindkey
-                }
+
+                parameters = {'emailto': self.request.get('remindemail'
+                              ), 'key': remindkey}
 
                 name = str(remindin)
                 name = md5.md5(name).hexdigest()
-                taskqueue.add(name=name, 
-                                url='/reminder', 
-                                countdown=1209600, 
-                                params=parameters)
-            
-            action = '/inventory?iid=' + entrykey + '&reminderset=' + str(remind)
+                taskqueue.add(name=name, url='/reminder',
+                              countdown=1209600, params=parameters)
+
+            action = '/inventory?iid=' + entrykey + '&reminderset=' \
+                + str(remind)
             self.redirect(action)
 
-        
 
 class RemindersHandler(webapp.RequestHandler):
 
     def get(self):
         user = users.get_current_user()
         if user:
-            if(self.request.get('action') == "delete"):
+            if self.request.get('action') == 'delete':
                 k = db.Key(self.request.get('key'))
                 getname = Reminders.all()
                 getname.filter('__key__ =', k)
@@ -431,26 +468,27 @@ class RemindersHandler(webapp.RequestHandler):
                 q = taskqueue.Queue('default')
                 q.delete_tasks(taskqueue.Task(name=name))
                 db.delete(k)
-                self.redirect('/');
+                self.redirect('/')
             else:
-                self.response.out.write("Whatwhat!?")
-    
-    def post(self): 
-        inventoryFrom = "allan@hitchless.com"
-        inventorySubject = "Take Your Major Depression Inventory"
+                self.response.out.write('Whatwhat!?')
+
+    def post(self):
+        inventoryFrom = 'allan@hitchless.com'
+        inventorySubject = 'Take Your Major Depression Inventory'
         message = mail.EmailMessage(sender=inventoryFrom,
-                                    subject=inventorySubject)                     
+                                    subject=inventorySubject)
         message.to = self.request.get('emailto')
-        message.body = """Take an inventory: https://depressiongraph.appspot.com"""
+        message.body = \
+            """Take an inventory: https://depressiongraph.appspot.com"""
         message.send()
-        
+
         k = db.Key(self.request.get('key'))
-        db.delete(k)        
-        
-        self.response.out.write("sent")
+        db.delete(k)
+
+        self.response.out.write('sent')
+
 
 class InventoryEmail(webapp.RequestHandler):
-
 
     def post(self):
         """
@@ -465,27 +503,30 @@ class InventoryEmail(webapp.RequestHandler):
 
         answers = Inventory().formatScore(inv[0].answers)
         diagnoses = Inventory().diagnose(inv[0].score)
-        
-        testdate = inv[0].date.strftime("%b %d %Y")
+
+        testdate = inv[0].date.strftime('%b %d %Y')
 
         user = users.get_current_user()
         if user:
             inventoryFrom = user.email()
             inventoryNickname = user.nickname()
         else:
-            inventoryFrom = "allan@hitchless.com"
-            inventoryNickname = "Depression Graph"
-            
-        inventorySubject = "Major Depression Inventory from " + inventoryNickname
+            inventoryFrom = 'allan@hitchless.com'
+            inventoryNickname = 'Depression Graph'
+
+        inventorySubject = 'Major Depression Inventory from ' \
+            + inventoryNickname
         message = mail.EmailMessage(sender=inventoryFrom,
                                     subject=inventorySubject)
         message.to = self.request.get('emailto')
 
         #
-        # TODO Update plain text version so it's better and shows everything 
+        # TODO Update plain text version so it's better and shows everything
         # the HTML version does.
         #
-        message.body = """
+
+        message.body = \
+            """
 Have you felt low in spirits or sad ?
 %s
 Have you lost interest in your daily activities ?
@@ -514,21 +555,25 @@ Score
 %s
 Diagnoses
 %s
-"""     %   (answers[0],
-             answers[1],
-             answers[2],
-             answers[3],
-             answers[4],
-             answers[5],
-             answers[6],
-             answers[7],
-             answers[8],
-             answers[9],
-             answers[10],
-             answers[11],
-             inv[0].score,
-             diagnoses)
-        message.html = """
+""" \
+            % (
+            answers[0],
+            answers[1],
+            answers[2],
+            answers[3],
+            answers[4],
+            answers[5],
+            answers[6],
+            answers[7],
+            answers[8],
+            answers[9],
+            answers[10],
+            answers[11],
+            inv[0].score,
+            diagnoses,
+            )
+        message.html = \
+            """
 
 <!doctype html>
 <html>
@@ -569,12 +614,12 @@ Diagnoses
 </td>
 <td valign="top" style="text-align: center">
 <p>
-	Score<br>
-	<strong style="font-size: 24px">%s</strong>
+    Score<br>
+    <strong style="font-size: 24px">%s</strong>
 </p>
 <p>
-	Diagnoses<br>
-	<strong style="font-size: 18px">%s</strong>
+    Diagnoses<br>
+    <strong style="font-size: 18px">%s</strong>
 </p>
 </td>
 </tr>
@@ -582,30 +627,33 @@ Diagnoses
 </body>
 </html>
 
-"""     %   (inventoryNickname,
-             testdate,
-             answers[0],
-             answers[1],
-             answers[2],
-             answers[3],
-             answers[4],
-             answers[5],
-             answers[6],
-             answers[7],
-             answers[8],
-             answers[9],
-             answers[10],
-             answers[11],
-             inv[0].score,
-             diagnoses)
-                     
+""" \
+            % (
+            inventoryNickname,
+            testdate,
+            answers[0],
+            answers[1],
+            answers[2],
+            answers[3],
+            answers[4],
+            answers[5],
+            answers[6],
+            answers[7],
+            answers[8],
+            answers[9],
+            answers[10],
+            answers[11],
+            inv[0].score,
+            diagnoses,
+            )
+
         message.send()
-        action = '/inventory?iid=' + self.request.get('iid') + '&emailsent=1'
+        action = '/inventory?iid=' + self.request.get('iid') \
+            + '&emailsent=1'
         self.redirect(action)
 
 
 class UpdateScores(webapp.RequestHandler):
-
 
     def get(self):
         """
@@ -615,6 +663,7 @@ class UpdateScores(webapp.RequestHandler):
         This is a pretty dangerous method and should be made 
         idempotent or something.
         """
+
         if users.is_current_user_admin():
             inventories_query = Inventories.all()
             inventories = inventories_query.fetch(1000)
@@ -622,13 +671,13 @@ class UpdateScores(webapp.RequestHandler):
                 k = db.get(inv.key())
                 k.score = inv.dsmscore
                 k.put()
-                g = '(score:' + str(inv.score) + ' - dsmscore: ' + str(inv.dsmscore) + ')\n'
+                g = '(score:' + str(inv.score) + ' - dsmscore: ' \
+                    + str(inv.dsmscore) + ')\n'
                 self.response.out.write(g)
-            self.response.out.write("Done")
+            self.response.out.write('Done')
 
 
 class ReScore(webapp.RequestHandler):
-
 
     def get(self):
         """
@@ -637,6 +686,7 @@ class ReScore(webapp.RequestHandler):
         them based on the recorded answers.
         This could/should be updated to support DSM scoring in the future.
         """
+
         if users.is_current_user_admin():
             inventories_query = Inventories.all()
             inventories = inventories_query.fetch(1000)
@@ -649,57 +699,58 @@ class ReScore(webapp.RequestHandler):
                 k.put()
                 g = 'score: ' + str(newscore) + '<br>'
                 self.response.out.write(g)
-            self.response.out.write("Done.")
+            self.response.out.write('Done.')
 
 
 class MoreInfo(webapp.RequestHandler):
 
-
     def get(self):
         user = users.get_current_user()
         if user:
             userreg = user.nickname()
-        else: 
+        else:
             userreg = 0
-        template_values = {
-            'user': userreg,
-        }
-        path = os.path.join(os.path.dirname(__file__), 'views/info.html')
+        template_values = {'user': userreg}
+        path = os.path.join(os.path.dirname(__file__), 'views/info.html'
+                            )
         self.response.out.write(template.render(path, template_values))
+
 
 class Privacy(webapp.RequestHandler):
-    
-    
+
     def get(self):
         user = users.get_current_user()
         if user:
             userreg = user.nickname()
-        else: 
+        else:
             userreg = 0
-        template_values = {
-            'user': userreg,
-        }
-        path = os.path.join(os.path.dirname(__file__), 'views/privacy.html')
+        template_values = {'user': userreg}
+        path = os.path.join(os.path.dirname(__file__),
+                            'views/privacy.html')
         self.response.out.write(template.render(path, template_values))
+
 
 #        path = os.path.join(os.path.dirname(__file__), 'views/privacy.html')
 #        self.response.out.write(template.render(path, {}))
 
+application = webapp.WSGIApplication([
+    ('/', MainHandler),
+    ('/api', JsonInventories),
+    ('/list', ListInventories),
+    ('/inventory', Inventory),
+    ('/updatescores', UpdateScores),
+    ('/rescore', ReScore),
+    ('/privacy', Privacy),
+    ('/take', TakeInventory),
+    ('/info', MoreInfo),
+    ('/reminder', RemindersHandler),
+    ('/inventory-email', InventoryEmail),
+    ], debug=True)
 
-application = webapp.WSGIApplication([('/', MainHandler),
-                                      ('/api', JsonInventories),
-                                      ('/list', ListInventories),
-                                      ('/inventory', Inventory),
-                                      ('/updatescores', UpdateScores),
-                                      ('/rescore', ReScore),
-                                      ('/privacy', Privacy),
-                                      ('/take', TakeInventory),
-                                      ('/info', MoreInfo),
-                                      ('/reminder', RemindersHandler),
-                                      ('/inventory-email', InventoryEmail)],
-                                      debug=True)
+
 def main():
     run_wsgi_app(application)
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     main()

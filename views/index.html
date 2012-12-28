@@ -31,7 +31,8 @@
   <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
   <meta http-equiv="cleartype" content="on">
 	
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <!-- // <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> -->
+  <script src="/js/libs/jquery-1.8.2.min.js"></script>
   <script src="/js/bootstrap.js"></script>
   
   <script src="/js/flot/jquery.flot.js"></script>
@@ -83,13 +84,13 @@
 
 		<script type="text/javascript">
     $(function () {
-
+        //tickSize: [14, "day"],
+        //minTickSize: [14, "day"]
       var options = {
             xaxis: { 
               mode: "time",
               timezone: "browser",
-              tickSize: [14, "day"],
-              minTickSize: [14, "day"]
+              
             },
             yaxis: {
                 ticks: 10,
@@ -109,72 +110,82 @@
             },
             grid: { 
               borderWidth: 0,
+              // I want to be able to add labels to the markings, so
+              // instead of doing this, I'm using a background image
+              // on the graph div ... not as cool as this, but it
+              // gets 'er done.
+              // markings: [
+              //             {yaxis: { from: 20.0, to: 25.0 },color: "#468847"},
+              //             {yaxis: { from: 25, to: 30.0 },color: "#F89406"},
+              //             {yaxis: { from: 30.0, to: 50.0 },color: "#B94A48"}
+              //           ],
               hoverable: true,
               clickable: true
             }};
           
         var dgraph = [
         {% for point in graph %}
-          [{{ point.0 }}, {{ point.1 }}],
+            [{{ point.0 }}, {{ point.1 }}],
         {% endfor %}
         ];
         var plot = $.plot($("#graph"), 
             [{ 
-              color: "#000",
+              color: "#FFF",
               data: dgraph, 
               label: ""
             }], options);
 
-          $("#slide").on('change', function(){
-                var lim = this.value;
-                var limlabel = this.value;
-                if(lim == 21) {
-                  lim = 1;
-                }
-                if(lim == 1) {
-                  limlabel = "All"
-                }
-                $('.rangeval .badge').html(limlabel);
-
-                apiuri = '/api?limit=' + lim;
-                function onDataReceived(series) {
-
-                    $.plot($('#graph'), 
-                      [{ 
-                        color: "#000",
-                        data: series, 
-                        label: ""
-                      }], 
-                      options
-                    );
-                 }
-                $.ajax({
-                    url: apiuri,
-                    method: 'GET',
-                    dataType: 'json',
-                    success: onDataReceived
-                });
-
-          });
-          $("#graph").bind("plotclick, plothover", function (event, pos, item) {
-              if (item) {
-                plot.unhighlight();
-                p = item.dataIndex + 1;
-                score = item.datapoint[1];
-                q = item.datapoint[0];
-                var myDate = new Date(q);
-                level = "badge-success";
-                if (score > 20) {
-                  level = "badge-warning";
-                }
-                if (score > 30) {
-                  level = "badge-important";
-                }
-                $("#clickdata").html("<hr><div class=arrow-down></div><p>Score: <span class='badge " + level + "'>" + score + "</span><br>"  + myDate.toLocaleDateString() + ".</p>");
-                //$("#linker").html("<a href=/inventory?iid=" + item.datapoint[0] + ">Link</a>");
-                plot.highlight(item.series, item.datapoint);
+        $("#slide").on('change', function(){
+              var lim = this.value;
+              var limlabel = this.value;
+              if(lim == 21) {
+                lim = 1;
               }
-          });
+              if(lim == 1) {
+                limlabel = "All"
+              }
+              $('.rangeval .badge').html(limlabel);
+
+              apiuri = '/api?limit=' + lim;
+
+              function onDataReceived(series) {
+
+                  $.plot($('#graph'), 
+                    [{ 
+                      color: "#CCC",
+                      data: series, 
+                      label: ""
+                    }], 
+                    options
+                  );
+              }
+              $.ajax({
+                  url: apiuri,
+                  method: 'GET',
+                  dataType: 'json',
+                  success: onDataReceived
+              });
+
+        });
+        $("#graph").bind("plotclick, plothover", function (event, pos, item) {
+            if (item) {
+              plot.unhighlight();
+              p = item.dataIndex + 1;
+              score = item.datapoint[1];
+              q = item.datapoint[0];
+              var myDate = new Date(q);
+              level = "badge-success";
+              if (score > 20) {
+                level = "badge-warning";
+              }
+              if (score > 30) {
+                level = "badge-important";
+              }
+              $("#clickdata").html("<hr><div class=arrow-down></div><p>Score: <span class='badge " + level + "'>" + score + "</span><br>"  + myDate.toLocaleDateString() + ".</p>");
+              //$("#linker").html("<a href=/inventory?iid=" + item.datapoint[0] + ">Link</a>");
+              plot.highlight(item.series, item.datapoint);
+            }
+        });
 
     });
     </script>
@@ -182,13 +193,7 @@
 
       <div id="graph"></div>
       
-      <!-- <div id="show">Show <a href="/" class="badge">8</a> <a href="/?limit=1" class="badge">All</a> tests.</div> -->
-      <!-- <div class="btn-group limiter" data-toggle="buttons-radio">
-        <button type="button" class="btn" data-lim="1">All</button>
-        <button type="button" class="btn" data-lim="8">8</button>
-        <button type="button" class="btn" data-lim="4">4</button>
-      </div> -->
-      <div class="well">
+      <div class="well slidedat">
         <input class="pull-left" id="slide" type="range" min="1" max="21" step="1" value="8">
         <div class="rangeval pull-left"><span class="badge">8</span></div>
       </div>
@@ -197,33 +202,19 @@
       <div class="take">
         <a class="btn btn-primary btn-large" href="/take">Take a Test</a>
       </div>
-
-
       <hr>
-
-        {% if reminder %}
-        
-      <p>You have a reminder set for {{ reminder.0.date|date:"F jS" }}. <a href="/reminder?action=delete&key={{ reminder.0.key }}" class="btn btn-mini">cancel</a></p>
+      {% if reminder %}
+      <p>You have a reminder set for {{ reminder.0.date|date:"F jS" }}. <a href="/reminder?action=delete&amp;key={{ reminder.0.key }}" class="btn btn-mini">cancel</a></p>
       {% endif %}
     </div>
-
     </div> <!-- /.row-fluid -->
-<!--     http://en.wikipedia.org/wiki/Major_Depression_Inventory -->
-
     <footer>
 		<hr>
-    	<p>Signed in as: {{ userreg }}.</p>
+    <p>Signed in as: {{ userreg }}.</p>
 		<p id="logout"><a class="btn btn-mini" href="{{ url }}">{{ url_linktext }}</a></p>
     </footer>
-  </div> <!--! end of #container -->
+</div> <!--! end of #container -->
 
-
-  
-  
-  <!-- Debugger - remove for production -->
-  <!-- <script src="https://getfirebug.com/firebug-lite.js"></script> -->
-  
-  <!-- mathiasbynens.be/notes/async-analytics-snippet Change UA-XXXXX-X to be your site's ID -->
 <script type="text/javascript">
 
   var _gaq = _gaq || [];

@@ -4,6 +4,18 @@
 		"selected_items":
 		[
 			[
+				"margin",
+				"margin-top"
+			],
+			[
+				"Inve",
+				"Inventory"
+			],
+			[
+				"form",
+				"formatScore"
+			],
+			[
 				"font",
 				"font-weight"
 			],
@@ -19,22 +31,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "views/info.html",
-			"settings":
-			{
-				"buffer_size": 6645,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "views/privacy.html",
-			"settings":
-			{
-				"buffer_size": 5960,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -47,7 +43,7 @@
 	},
 	"console":
 	{
-		"height": 0.0
+		"height": 125.0
 	},
 	"distraction_free":
 	{
@@ -60,17 +56,20 @@
 	},
 	"file_history":
 	[
-		"/Users/allan/Sites/depressiongraph/views/humans.txt",
-		"/Users/allan/Sites/depressiongraph/views/index-googchart.html",
-		"/Users/allan/Sites/depressiongraph/main.py",
 		"/Users/allan/Sites/depressiongraph/views/css/depression-graph.css",
 		"/Users/allan/Sites/depressiongraph/views/index.html",
+		"/Users/allan/Sites/depressiongraph/main.py",
+		"/Users/allan/Desktop/feeds-buddypress/readme.txt",
+		"/Users/allan/Library/Caches/Cleanup At Startup/Transmit/8E09B0CA-A049-4837-B73E-8AF1908802D6/editor-style-rtl.css",
+		"/Users/allan/Sites/depressiongraph/views/index-googchart.html",
+		"/Users/allan/Sites/depressiongraph/dg.sublime-project",
+		"/Users/allan/Sites/depressiongraph/views/info.html",
+		"/Users/allan/Sites/depressiongraph/views/privacy.html",
+		"/Users/allan/Sites/depressiongraph/views/humans.txt",
 		"/Users/allan/Sites/depressiongraph/views/inventory-form.html",
 		"/Users/allan/Sites/depressiongraph/views/inventory-complete.html",
 		"/Users/allan/Sites/depressiongraph/views/login.html",
 		"/Users/allan/Sites/depressiongraph/views/list.html",
-		"/Users/allan/Sites/depressiongraph/views/privacy.html",
-		"/Users/allan/Sites/depressiongraph/views/info.html",
 		"/Users/allan/Sites/depressiongraph/views/MDI.html",
 		"/Users/allan/Library/Application Support/Sublime Text 2/Packages/User/Preferences.sublime-settings",
 		"/Users/allan/Library/Application Support/Sublime Text 2/Packages/Default/Preferences.sublime-settings"
@@ -91,6 +90,18 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			".on",
+			"if",
+			"user",
+			"scoreIn",
+			"scoreit",
+			"ScoreInve",
+			"ScoreInvet",
+			"ScoreInvent",
+			"ScoreInventsr",
+			"formatScore",
+			"scoreit",
+			"scoreitforma",
 			"active",
 			"db.",
 			"http://",
@@ -103,6 +114,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"formatScore",
 			"score"
 		],
 		"reverse": false,
@@ -114,65 +126,8 @@
 	"groups":
 	[
 		{
-			"selected": 1,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "views/info.html",
-					"settings":
-					{
-						"buffer_size": 6645,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "views/privacy.html",
-					"settings":
-					{
-						"buffer_size": 5960,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				}
 			]
 		}
 	],

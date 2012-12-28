@@ -79,12 +79,19 @@ iframe {
 	iframe {
 		width: 100%;
 	}
+	.slidedat {
+		
+	}
 	#slide {
 		float: left;
-		width: 260px !important;
+		width: 160px !important;
 	}
 	.rangeval {
-		float: left;
+		padding: 0;
+	}
+	.tickLabel {
+		line-height: 10px;
+		-webkit-transform: rotate(-45deg);
 	}
 }
 .arrow-down { 
@@ -95,9 +102,7 @@ iframe {
 	margin: 0 auto 10px auto;
 	width: 0;
 }
-.tickLabel {
-	/*-webkit-transform: rotate(-45deg);*/
-}
+
 #clickdata {
 	color: #999;
 	text-align: center;
@@ -109,6 +114,7 @@ iframe {
 	margin: 20px 0 -1px 0;
 }
 #graph {
+	background: url('../img/scale-bg.png') 22px 0 no-repeat;
 	height: 300px;
 	width: 100%;
 }
@@ -117,6 +123,9 @@ iframe {
 	text-align: center;;
 	
 }
+.slidedat {
+	margin: 15px 0 0 0;
+}
 #slide {
 	margin: 10px auto;
 	width: 90%;
@@ -124,4 +133,9 @@ iframe {
 .rangeval {
 	font-weight: bold;
 	padding: 5px 0 0 20px;
+}
+.tickLabel {
+	/*background: #FFF;*/
+	/*border-radius: 50%;*/
+	padding: 0 4px;
 }
